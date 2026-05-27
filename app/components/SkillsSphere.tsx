@@ -2,38 +2,77 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 
+/* ── skill list with Simple Icons slugs ─────────────────────
+   slug: null → text fallback (no icon available)            */
 const SKILLS = [
-  "JavaScript","TypeScript","Python","C / C++","SQL",
-  "React.js","Next.js","React Native","Tailwind CSS","Redux","Three.js",
-  "Node.js","Express.js","REST APIs","Socket.IO","CI/CD",
-  "PostgreSQL","MongoDB","Supabase","Redis","Mongoose",
-  "Git / GitHub","Docker","Linux","Postman","GitHub Actions","Expo",
-];
+  { name: "JavaScript",     slug: "javascript" },
+  { name: "TypeScript",     slug: "typescript" },
+  { name: "Python",         slug: "python" },
+  { name: "C++",            slug: "cplusplus" },
+  { name: "React",          slug: "react" },
+  { name: "Next.js",        slug: "nextdotjs" },
+  { name: "Tailwind CSS",   slug: "tailwindcss" },
+  { name: "Redux",          slug: "redux" },
+  { name: "Three.js",       slug: "threedotjs" },
+  { name: "Node.js",        slug: "nodedotjs" },
+  { name: "Express.js",     slug: "express" },
+  { name: "Socket.IO",      slug: "socketdotio" },
+  { name: "PostgreSQL",     slug: "postgresql" },
+  { name: "MongoDB",        slug: "mongodb" },
+  { name: "Supabase",       slug: "supabase" },
+  { name: "Redis",          slug: "redis" },
+  { name: "Docker",         slug: "docker" },
+  { name: "Linux",          slug: "linux" },
+  { name: "GitHub",         slug: "github" },
+  { name: "Git",            slug: "git" },
+  { name: "Postman",        slug: "postman" },
+  { name: "Expo",           slug: "expo" },
+  { name: "GH Actions",     slug: "githubactions" },
+  { name: "React Native",   slug: "react" },
+  { name: "SQL",            slug: "mysql" },
+  { name: "Mongoose",       slug: "mongoose" },
+  { name: "REST APIs",      slug: null },
+] as const;
 
-const RADIUS = 1.55;
+const RADIUS  = 1.6;
+const S       = 64;          // canvas texture size (px)
+const BASE_SC = 0.34;        // sprite base scale in 3D units
 
-function makeSprite(text: string): { sprite: THREE.Sprite; mat: THREE.SpriteMaterial; baseW: number; baseH: number } {
-  const c   = document.createElement("canvas");
+/* ── draw a circular placeholder (shows before logo loads) ── */
+function placeholderCanvas(label: string): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = S; c.height = S;
   const ctx = c.getContext("2d")!;
-  const fs  = 15;
-  ctx.font  = `${fs}px "Courier New", monospace`;
-  const tw  = Math.ceil(ctx.measureText(text).width) + 24;
-  const th  = fs + 14;
-  c.width = tw; c.height = th;
-
-  /* text */
-  ctx.font      = `${fs}px "Courier New", monospace`;
-  ctx.fillStyle = "rgba(201,168,76,0.9)";
+  ctx.beginPath();
+  ctx.arc(S / 2, S / 2, S / 2 - 2, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(201,168,76,0.28)";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.fillStyle = "rgba(201,168,76,0.55)";
+  ctx.font = `bold 13px 'Courier New'`;
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText(text, tw / 2, th / 2);
+  ctx.fillText(label.substring(0, 3).toUpperCase(), S / 2, S / 2);
+  return c;
+}
 
-  const tex = new THREE.CanvasTexture(c);
-  const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
-  const spr = new THREE.Sprite(mat);
-  const sc  = 1 / 70;
-  spr.scale.set(tw * sc, th * sc, 1);
-  return { sprite: spr, mat, baseW: tw * sc, baseH: th * sc };
+/* ── draw the logo into a circular canvas ─────────────────── */
+function logoCanvas(img: HTMLImageElement): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = S; c.height = S;
+  const ctx = c.getContext("2d")!;
+  // soft circle bg
+  ctx.beginPath();
+  ctx.arc(S / 2, S / 2, S / 2 - 1, 0, Math.PI * 2);
+  ctx.fillStyle = "rgba(201,168,76,0.07)";
+  ctx.fill();
+  ctx.strokeStyle = "rgba(201,168,76,0.22)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  // icon
+  const pad = 13;
+  ctx.drawImage(img, pad, pad, S - pad * 2, S - pad * 2);
+  return c;
 }
 
 export default function SkillsSphere() {
@@ -42,8 +81,9 @@ export default function SkillsSphere() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    let alive = true;
 
-    const W = canvas.clientWidth || 500;
+    const W = canvas.clientWidth  || 520;
     const H = canvas.clientHeight || 400;
 
     /* ── renderer ── */
@@ -53,57 +93,94 @@ export default function SkillsSphere() {
     renderer.setClearColor(0x000000, 0);
 
     const scene  = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 50);
-    camera.position.z = 4.2;
+    const camera = new THREE.PerspectiveCamera(48, W / H, 0.1, 50);
+    camera.position.z = 4.4;
 
-    /* ── sphere group ── */
-    const group  = new THREE.Group();
+    /* ── group (everything rotates together) ── */
+    const group = new THREE.Group();
     scene.add(group);
 
-    /* ── sprites — Fibonacci sphere distribution ── */
-    type Entry = { sprite: THREE.Sprite; mat: THREE.SpriteMaterial; baseW: number; baseH: number };
+    /* ── equator guide ring ── */
+    const ringGeo = new THREE.TorusGeometry(RADIUS, 0.003, 4, 90);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0xc9a84c, transparent: true, opacity: 0.1 });
+    group.add(new THREE.Mesh(ringGeo, ringMat));
+
+    /* ── sprites ── */
+    type Entry = { sprite: THREE.Sprite; mat: THREE.SpriteMaterial };
     const entries: Entry[] = [];
 
     SKILLS.forEach((skill, i) => {
+      /* Fibonacci sphere position */
       const phi   = Math.acos(1 - 2 * (i + 0.5) / SKILLS.length);
       const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      const entry = makeSprite(skill);
-      entry.sprite.position.set(
+      const pos   = new THREE.Vector3(
         RADIUS * Math.sin(phi) * Math.cos(theta),
         RADIUS * Math.cos(phi),
         RADIUS * Math.sin(phi) * Math.sin(theta),
       );
-      group.add(entry.sprite);
-      entries.push(entry);
+
+      /* start with placeholder texture */
+      const ph  = placeholderCanvas(skill.name);
+      const tex = new THREE.CanvasTexture(ph);
+      const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
+      const spr = new THREE.Sprite(mat);
+      spr.scale.set(BASE_SC, BASE_SC, 1);
+      spr.position.copy(pos);
+      group.add(spr);
+      entries.push({ sprite: spr, mat });
+
+      /* load real icon in background */
+      if (skill.slug) {
+        const img  = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          if (!alive) return;
+          const newTex = new THREE.CanvasTexture(logoCanvas(img));
+          tex.dispose();
+          mat.map = newTex;
+          mat.needsUpdate = true;
+        };
+        // Simple Icons CDN — gold color, no #
+        img.src = `https://cdn.simpleicons.org/${skill.slug}/c9a84c`;
+      }
     });
 
-    /* ── subtle axis helper lines (equator ring) ── */
-    const ringGeo = new THREE.TorusGeometry(RADIUS, 0.003, 4, 80);
-    const ringMat = new THREE.MeshBasicMaterial({ color: 0xc9a84c, transparent: true, opacity: 0.12 });
-    group.add(new THREE.Mesh(ringGeo, ringMat));
+    /* ── drag rotation ── */
+    let dragging = false, lastX = 0, lastY = 0, velX = 0, velY = 0;
 
-    /* ── mouse drag rotation ── */
-    let dragging  = false;
-    let lastX = 0, lastY = 0;
-    let velX  = 0, velY  = 0;
-
-    const onDown = (e: MouseEvent) => { dragging = true; lastX = e.clientX; lastY = e.clientY; velX = velY = 0; };
-    const onUp   = ()               => { dragging = false; };
-    const onMove = (e: MouseEvent)  => {
+    const onDown = (e: MouseEvent) => {
+      dragging = true; lastX = e.clientX; lastY = e.clientY; velX = velY = 0;
+    };
+    const onUp   = () => { dragging = false; };
+    const onMove = (e: MouseEvent) => {
       if (!dragging) return;
-      const dx = e.clientX - lastX;
-      const dy = e.clientY - lastY;
-      group.rotation.y += dx * 0.007;
-      group.rotation.x += dy * 0.007;
-      velX = dx * 0.007; velY = dy * 0.007;
+      velX = (e.clientX - lastX) * 0.007;
+      velY = (e.clientY - lastY) * 0.007;
+      group.rotation.y += velX;
+      group.rotation.x += velY;
       lastX = e.clientX; lastY = e.clientY;
     };
 
-    canvas.addEventListener("mousedown", onDown);
-    window.addEventListener("mouseup",   onUp);
-    window.addEventListener("mousemove", onMove);
+    /* touch support */
+    const onTouchStart = (e: TouchEvent) => {
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY; velX = velY = 0; dragging = true;
+    };
+    const onTouchMove  = (e: TouchEvent) => {
+      if (!dragging) return;
+      velX = (e.touches[0].clientX - lastX) * 0.007;
+      velY = (e.touches[0].clientY - lastY) * 0.007;
+      group.rotation.y += velX; group.rotation.x += velY;
+      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
+    };
+    const onTouchEnd = () => { dragging = false; };
 
-    /* ── resize ── */
+    canvas.addEventListener("mousedown",  onDown);
+    canvas.addEventListener("touchstart", onTouchStart, { passive: true });
+    canvas.addEventListener("touchmove",  onTouchMove,  { passive: true });
+    canvas.addEventListener("touchend",   onTouchEnd);
+    window.addEventListener("mouseup",    onUp);
+    window.addEventListener("mousemove",  onMove);
+
     const onResize = () => {
       const w = canvas.clientWidth, h = canvas.clientHeight;
       renderer.setSize(w, h);
@@ -114,25 +191,23 @@ export default function SkillsSphere() {
 
     /* ── animation loop ── */
     let raf: number;
-
     const tick = () => {
       raf = requestAnimationFrame(tick);
 
       if (!dragging) {
-        group.rotation.y += 0.0022;   // slow auto-spin
-        velX *= 0.92; velY *= 0.92;
+        group.rotation.y += 0.0020;
+        velX *= 0.90; velY *= 0.90;
         group.rotation.y += velX;
         group.rotation.x += velY;
       }
 
-      /* depth-based scale + opacity for every sprite */
-      entries.forEach(({ sprite, mat, baseW, baseH }) => {
-        /* world z after rotation */
+      /* depth-based scale + opacity */
+      entries.forEach(({ sprite, mat }) => {
         const wp = sprite.position.clone().applyQuaternion(group.quaternion);
         const t  = (wp.z + RADIUS) / (RADIUS * 2); // 0 = back, 1 = front
-        const s  = 0.38 + t * 0.8;
-        sprite.scale.set(baseW * s, baseH * s, 1);
-        mat.opacity = 0.18 + t * 0.82;
+        const s  = 0.35 + t * 0.75;
+        sprite.scale.set(BASE_SC * s, BASE_SC * s, 1);
+        mat.opacity = 0.15 + t * 0.85;
       });
 
       renderer.render(scene, camera);
@@ -140,21 +215,34 @@ export default function SkillsSphere() {
     tick();
 
     return () => {
+      alive = false;
       cancelAnimationFrame(raf);
-      canvas.removeEventListener("mousedown", onDown);
-      window.removeEventListener("mouseup",   onUp);
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("resize",    onResize);
+      canvas.removeEventListener("mousedown",  onDown);
+      canvas.removeEventListener("touchstart", onTouchStart);
+      canvas.removeEventListener("touchmove",  onTouchMove);
+      canvas.removeEventListener("touchend",   onTouchEnd);
+      window.removeEventListener("mouseup",    onUp);
+      window.removeEventListener("mousemove",  onMove);
+      window.removeEventListener("resize",     onResize);
       renderer.dispose();
-      entries.forEach(e => { e.mat.map?.dispose(); e.mat.dispose(); });
+      entries.forEach(({ mat }) => { mat.map?.dispose(); mat.dispose(); });
       ringGeo.dispose(); ringMat.dispose();
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{ width: "100%", height: 380, display: "block", cursor: "grab" }}
-    />
+    <div style={{ position: "relative" }}>
+      <canvas
+        ref={canvasRef}
+        style={{ width: "100%", height: 400, display: "block", cursor: "grab", touchAction: "none" }}
+      />
+      <p style={{
+        position: "absolute", bottom: 8, right: 12,
+        fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase",
+        color: "rgba(var(--tx),0.2)",
+      }}>
+        drag to rotate
+      </p>
+    </div>
   );
 }

@@ -171,26 +171,21 @@ export default function Contact() {
             </a>
           </div>
 
-          <div
-            style={{
-              border: "1px solid rgba(201,168,76,0.15)",
-              background: "rgba(0,0,0,0.35)",
-              padding: "20px 20px 14px",
-              overflowX: "auto",          /* horizontal scroll on mobile */
-              WebkitOverflowScrolling: "touch",
-            }}
-          >
+          {/* dark-theme activity graph — fits the portfolio palette */}
+          <div style={{
+            border: "1px solid rgba(201,168,76,0.18)",
+            background: "rgba(0,0,0,0.6)",
+            overflow: "hidden",
+          }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="https://ghchart.rshah.org/c9a84c/sahilforkshere"
-              alt="Sahil Pal GitHub contribution graph"
+              src="https://github-readme-activity-graph.vercel.app/graph?username=sahilforkshere&bg_color=000000&color=c9a84c&line=c9a84c&point=e8c97a&area=true&hide_border=true&area_color=c9a84c"
+              alt="Sahil Pal GitHub activity graph"
               style={{
                 display: "block",
                 width: "100%",
-                minWidth: 640,           /* never squish below GitHub's natural size */
+                minWidth: 660,
                 height: "auto",
-                opacity: 0.9,
-                filter: "brightness(1.08) contrast(1.05)",
               }}
             />
           </div>

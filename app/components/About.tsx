@@ -67,6 +67,7 @@ export default function About() {
             >
               <a
                 href="/resume.pdf"
+                download="Sahil_Pal_Resume.pdf"
                 className="inline-flex items-center gap-3 text-xs tracking-[0.18em] uppercase px-6 py-3 border border-white/20 text-white/70 hover:border-[#c9a84c] hover:text-[#c9a84c] transition-all duration-300"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
