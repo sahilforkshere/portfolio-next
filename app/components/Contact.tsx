@@ -88,6 +88,7 @@ export default function Contact() {
                 </a>
               ))}
             </div>
+
           </div>
 
           {/* Form */}
@@ -147,6 +148,54 @@ export default function Contact() {
             </button>
           </form>
         </div>
+
+        {/* ── GitHub contribution graph — full width ── */}
+        <div className="reveal mt-20 md:mt-24" style={{ transitionDelay: "0.25s" }}>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <span className="line-gold" />
+              <p className="text-[11px] tracking-[0.28em] uppercase" style={{ color: "rgba(var(--tx),0.35)" }}>
+                GitHub Activity
+              </p>
+            </div>
+            <a
+              href="https://github.com/sahilforkshere"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[10px] tracking-[0.18em] uppercase transition-colors duration-300"
+              style={{ color: "rgba(var(--tx),0.22)" }}
+              onMouseEnter={e => (e.currentTarget.style.color = "var(--gold)")}
+              onMouseLeave={e => (e.currentTarget.style.color = "rgba(var(--tx),0.22)")}
+            >
+              github.com/sahilforkshere ↗
+            </a>
+          </div>
+
+          <div
+            style={{
+              border: "1px solid rgba(201,168,76,0.15)",
+              background: "rgba(0,0,0,0.35)",
+              padding: "20px 20px 14px",
+              overflowX: "auto",          /* horizontal scroll on mobile */
+              WebkitOverflowScrolling: "touch",
+            }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="https://ghchart.rshah.org/c9a84c/sahilforkshere"
+              alt="Sahil Pal GitHub contribution graph"
+              style={{
+                display: "block",
+                width: "100%",
+                minWidth: 640,           /* never squish below GitHub's natural size */
+                height: "auto",
+                opacity: 0.9,
+                filter: "brightness(1.08) contrast(1.05)",
+              }}
+            />
+          </div>
+        </div>
+
       </div>
     </section>
   );

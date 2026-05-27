@@ -1,3 +1,7 @@
+"use client";
+import dynamic from "next/dynamic";
+const SkillsSphere = dynamic(() => import("./SkillsSphere"), { ssr: false });
+
 const categories = [
   { title: "Languages",    items: ["JavaScript", "TypeScript", "Python", "C / C++", "SQL"] },
   { title: "Frontend",     items: ["React.js", "Next.js", "React Native", "Tailwind CSS", "Redux", "Three.js"] },
@@ -31,6 +35,11 @@ export default function Skills() {
           <br />
           <span style={{ color: "var(--gold)" }}>with.</span>
         </h2>
+
+        {/* 3D skills sphere */}
+        <div className="reveal mb-4" style={{ transitionDelay: "0.15s" }}>
+          <SkillsSphere />
+        </div>
 
         {/* Skill grid */}
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-px bg-white/[0.06]">

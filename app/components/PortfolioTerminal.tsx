@@ -147,11 +147,12 @@ const WELCOME: Line[] = [
 
 /* ─── component ──────────────────────────────────────────── */
 export default function PortfolioTerminal() {
-  const [lines, setLines]     = useState<Line[]>(WELCOME);
-  const [input, setInput]     = useState("");
-  const [cwd, setCwd]         = useState("~");
-  const [history, setHistory] = useState<string[]>([]);
-  const [hIdx, setHIdx]       = useState(-1);
+  const [lines, setLines]       = useState<Line[]>(WELCOME);
+  const [input, setInput]       = useState("");
+  const [cwd, setCwd]           = useState("~");
+  const [history, setHistory]   = useState<string[]>([]);
+  const [hIdx, setHIdx]         = useState(-1);
+  const [maximized, setMaximized] = useState(false);
 
   const outputRef = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
@@ -160,6 +161,25 @@ export default function PortfolioTerminal() {
     const el = outputRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [lines]);
+
+  /* lock body scroll + Escape to close when maximized */
+  useEffect(() => {
+    if (!maximized) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === "Escape") setMaximized(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [maximized]);
+
+  /* re-focus input when maximized */
+  useEffect(() => {
+    if (maximized) setTimeout(() => inputRef.current?.focus(), 60);
+  }, [maximized]);
 
   const push = (...ls: Line[]) => setLines(p => [...p, ...ls]);
 
@@ -321,38 +341,119 @@ export default function PortfolioTerminal() {
     return "rgba(255,255,255,0.55)";
   };
 
-  return (
+  const terminalShell = (isModal: boolean) => (
     <div
-      className="w-full reveal"
       style={{
-        border: "1px solid rgba(201,168,76,0.2)",
-        background: "rgba(0,0,0,0.82)",
-        backdropFilter: "blur(8px)",
+        display: "flex",
+        flexDirection: "column",
+        height: isModal ? "100%" : "auto",
+        border: "1px solid rgba(201,168,76,0.22)",
+        background: "rgba(6,6,10,0.97)",
+        backdropFilter: "blur(18px)",
         fontFamily: "'Courier New', Courier, monospace",
-        fontSize: 12,
-        lineHeight: "1.65",
+        fontSize: isModal ? 13 : 12,
+        lineHeight: "1.68",
         cursor: "text",
+        ...(isModal ? { borderRadius: 0 } : {}),
       }}
       onClick={() => inputRef.current?.focus()}
     >
-      {/* Title bar */}
+      {/* ── title bar ── */}
       <div
-        className="flex items-center gap-2 px-4 py-2.5"
-        style={{ borderBottom: "1px solid rgba(201,168,76,0.12)", background: "rgba(255,255,255,0.03)" }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "8px 14px",
+          borderBottom: "1px solid rgba(201,168,76,0.1)",
+          background: "rgba(255,255,255,0.025)",
+          flexShrink: 0,
+          userSelect: "none",
+        }}
       >
-        <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#ff5f57" }} />
-        <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#febc2e" }} />
-        <span className="w-2.5 h-2.5 rounded-full" style={{ background: "#28c840" }} />
-        <span className="ml-3 text-[10px] tracking-[0.25em] uppercase" style={{ color: "rgba(255,255,255,0.25)" }}>
+        {/* Traffic lights */}
+        <button
+          onClick={(e) => { e.stopPropagation(); if (isModal) setMaximized(false); }}
+          style={{
+            width: 11, height: 11, borderRadius: "50%",
+            background: "#ff5f57", border: "none", cursor: "pointer", padding: 0,
+          }}
+          title="Close"
+        />
+        <span style={{ width: 11, height: 11, borderRadius: "50%", background: "#febc2e", display: "inline-block" }} />
+        {/* Green = maximize / restore */}
+        <button
+          onClick={(e) => { e.stopPropagation(); setMaximized(v => !v); }}
+          style={{
+            width: 11, height: 11, borderRadius: "50%",
+            background: "#28c840", border: "none", cursor: "pointer", padding: 0,
+          }}
+          title={maximized ? "Restore" : "Maximise"}
+        />
+
+        <span style={{
+          marginLeft: 10,
+          fontSize: 10,
+          letterSpacing: "0.25em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.22)",
+        }}>
           sahil@portfolio — terminal
         </span>
+
+        {/* Expand / restore icon on the right */}
+        <button
+          onClick={(e) => { e.stopPropagation(); setMaximized(v => !v); }}
+          title={maximized ? "Restore window" : "Maximise"}
+          style={{
+            marginLeft: "auto",
+            background: "transparent",
+            border: "1px solid rgba(255,255,255,0.1)",
+            cursor: "pointer",
+            padding: "2px 5px",
+            display: "flex",
+            alignItems: "center",
+            color: "rgba(255,255,255,0.3)",
+            transition: "color 0.2s, border-color 0.2s",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.color = "var(--gold)";
+            (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,168,76,0.5)";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.color = "rgba(255,255,255,0.3)";
+            (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.1)";
+          }}
+        >
+          {maximized ? (
+            /* Restore icon */
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+              <rect x="3" y="0.5" width="7" height="7" rx="0.5" stroke="currentColor" strokeWidth="1"/>
+              <path d="M1 3.5V9.5H7.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round"/>
+            </svg>
+          ) : (
+            /* Expand icon */
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
+              <path d="M7 1H10V4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6.5 4.5L10 1" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+              <path d="M4 10H1V7" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M4.5 6.5L1 10" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            </svg>
+          )}
+        </button>
       </div>
 
-      {/* Output */}
+      {/* ── output ── */}
       <div
         ref={outputRef}
-        className="px-4 py-3 overflow-y-auto"
-        style={{ height: 280, scrollbarWidth: "thin", scrollbarColor: "rgba(201,168,76,0.2) transparent" }}
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: "12px 16px",
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(201,168,76,0.2) transparent",
+          ...(isModal ? {} : { height: 280 }),
+        }}
       >
         {lines.map(ln => (
           <div
@@ -368,12 +469,18 @@ export default function PortfolioTerminal() {
         ))}
       </div>
 
-      {/* Input row */}
+      {/* ── input ── */}
       <div
-        className="flex items-center gap-2 px-4 py-2.5"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "10px 16px",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+          flexShrink: 0,
+        }}
       >
-        <span style={{ color: "var(--gold)", whiteSpace: "nowrap", fontSize: 12 }}>
+        <span style={{ color: "var(--gold)", whiteSpace: "nowrap", fontSize: isModal ? 13 : 12 }}>
           {cwd} $
         </span>
         <input
@@ -384,16 +491,70 @@ export default function PortfolioTerminal() {
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
-          className="flex-1 bg-transparent outline-none border-none"
           style={{
+            flex: 1,
+            background: "transparent",
+            outline: "none",
+            border: "none",
             color: "rgba(255,255,255,0.85)",
             fontFamily: "inherit",
-            fontSize: 12,
+            fontSize: isModal ? 13 : 12,
             caretColor: "var(--gold)",
           }}
           placeholder="type a command…"
         />
+        {isModal && (
+          <span style={{ fontSize: 10, color: "rgba(255,255,255,0.18)", letterSpacing: "0.1em" }}>
+            ESC to close
+          </span>
+        )}
       </div>
     </div>
+  );
+
+  return (
+    <>
+      {/* ── inline terminal ── */}
+      <div className="w-full reveal" style={{ display: maximized ? "none" : "block" }}>
+        {terminalShell(false)}
+      </div>
+
+      {/* ── maximised modal ── */}
+      {maximized && (
+        <>
+          <style>{`
+            @keyframes termExpand {
+              from { opacity: 0; transform: scale(0.96); }
+              to   { opacity: 1; transform: scale(1); }
+            }
+          `}</style>
+
+          {/* Backdrop */}
+          <div
+            onClick={() => setMaximized(false)}
+            style={{
+              position: "fixed",
+              inset: 0,
+              zIndex: 9990,
+              background: "rgba(0,0,0,0.75)",
+              backdropFilter: "blur(4px)",
+            }}
+          />
+
+          {/* Modal window */}
+          <div
+            style={{
+              position: "fixed",
+              inset: "3vh 3vw",
+              zIndex: 9991,
+              animation: "termExpand 0.22s cubic-bezier(0.22,1,0.36,1) forwards",
+              boxShadow: "0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(201,168,76,0.18)",
+            }}
+          >
+            {terminalShell(true)}
+          </div>
+        </>
+      )}
+    </>
   );
 }
