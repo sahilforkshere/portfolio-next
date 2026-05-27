@@ -1,4 +1,5 @@
 import DevAvatar from "./DevAvatar";
+import PortfolioTerminal from "./PortfolioTerminal";
 
 export default function About() {
   return (
@@ -87,8 +88,8 @@ export default function About() {
             </div>
           </div>
 
-          {/* Right — avatar + quick facts */}
-          <div className="reveal-right flex flex-col items-center gap-8" style={{ transitionDelay: "0.15s" }}>
+          {/* Right — avatar + terminal */}
+          <div className="reveal-right flex flex-col items-center gap-6 w-full" style={{ transitionDelay: "0.15s" }}>
             <div className="relative w-full max-w-[300px]">
               {/* Corner accents */}
               <span className="absolute top-4 left-4 w-4 h-4 border-t border-l z-10 pointer-events-none" style={{ borderColor: "var(--gold)" }} />
@@ -98,6 +99,7 @@ export default function About() {
               <DevAvatar />
             </div>
 
+            <PortfolioTerminal />
           </div>
         </div>
       </div>
