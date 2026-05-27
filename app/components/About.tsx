@@ -98,20 +98,6 @@ export default function About() {
               <DevAvatar />
             </div>
 
-            {/* Competitive programming */}
-            <div className="w-full grid grid-cols-3 gap-px bg-white/[0.06]">
-              {[
-                { platform: "LeetCode", handle: "sahil_100804", count: "300+" },
-                { platform: "Codeforces", handle: "codesahil.c", count: "Active" },
-                { platform: "GFG", handle: "Profile", count: "Active" },
-              ].map((p) => (
-                <div key={p.platform} className="card p-4 text-center">
-                  <p className="text-[10px] tracking-[0.15em] uppercase text-white/25 mb-1">{p.platform}</p>
-                  <p className="text-lg font-light" style={{ color: "var(--gold-light)" }}>{p.count}</p>
-                  <p className="text-[10px] text-white/30 mt-1">{p.handle}</p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
