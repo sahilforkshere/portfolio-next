@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import dynamic from "next/dynamic";
+
+const HeroBackground = dynamic(() => import("./HeroBackground"), { ssr: false });
 
 export default function Hero() {
   const [scrollY, setScrollY] = useState(0);
@@ -24,6 +27,9 @@ export default function Hero() {
       ref={heroRef}
       className="relative h-screen flex flex-col items-center justify-center overflow-hidden"
     >
+      {/* Three.js particle constellation */}
+      <HeroBackground />
+
       {/* Subtle vignette */}
       <div
         className="absolute inset-0 pointer-events-none"
