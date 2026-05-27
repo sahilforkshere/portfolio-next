@@ -36,23 +36,6 @@ const items = [
     current: false,
     icon: "🔧",
   },
-  {
-    id: "edu",
-    type: "education",
-    period: "Aug 2023",
-    periodEnd: "Present",
-    title: "B.Tech — Information Technology",
-    org: "IIITM Gwalior",
-    location: "Gwalior, M.P. · CGPA 7.52",
-    tags: ["Data Structures", "Algorithms", "System Design", "DBMS", "OS"],
-    bullets: [
-      "JEE Main 2023 — 99 percentile, top 1% among 1.4 million candidates.",
-      "JEE Advanced 2023 — AIR 11,994 among 200,000+ aspirants.",
-      "300+ problems solved on LeetCode, Codeforces, and GeeksForGeeks.",
-    ],
-    current: true,
-    icon: "🎓",
-  },
 ];
 
 export default function Timeline() {

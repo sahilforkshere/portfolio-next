@@ -1,3 +1,4 @@
+import LoadingScreen from "./components/LoadingScreen";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import About from "./components/About";
@@ -13,6 +14,7 @@ import ScrollInit from "./components/ScrollInit";
 export default function Home() {
   return (
     <>
+      <LoadingScreen />
       <ScrollInit />
       <Navbar />
       <main>

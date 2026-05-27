@@ -1,31 +1,16 @@
 const categories = [
-  {
-    title: "Languages",
-    items: ["JavaScript", "TypeScript", "Python", "C / C++", "SQL"],
-  },
-  {
-    title: "Frontend",
-    items: ["React.js", "Next.js", "React Native", "Tailwind CSS", "Redux", "Three.js"],
-  },
-  {
-    title: "Backend",
-    items: ["Node.js", "Express.js", "REST APIs", "Socket.IO", "CI / CD"],
-  },
-  {
-    title: "Databases",
-    items: ["PostgreSQL", "MongoDB", "Supabase", "Redis", "Mongoose"],
-  },
-  {
-    title: "Tools & Infra",
-    items: ["Git / GitHub", "Docker", "Linux", "Postman", "GitHub Actions", "Expo"],
-  },
+  { title: "Languages",    items: ["JavaScript", "TypeScript", "Python", "C / C++", "SQL"] },
+  { title: "Frontend",     items: ["React.js", "Next.js", "React Native", "Tailwind CSS", "Redux", "Three.js"] },
+  { title: "Backend",      items: ["Node.js", "Express.js", "REST APIs", "Socket.IO", "CI / CD"] },
+  { title: "Databases",    items: ["PostgreSQL", "MongoDB", "Supabase", "Redis", "Mongoose"] },
+  { title: "Tools & Infra",items: ["Git / GitHub", "Docker", "Linux", "Postman", "GitHub Actions", "Expo"] },
 ];
 
 const stats = [
-  { n: "3+", label: "Production Projects" },
-  { n: "2+", label: "Years Coding" },
-  { n: "300+", label: "DSA Problems Solved" },
-  { n: "99%ile", label: "JEE Main 2023" },
+  { n: "3+",    label: "Production Projects" },
+  { n: "2+",    label: "Years Coding" },
+  { n: "300+",  label: "DSA Problems Solved" },
+  { n: "99%ile",label: "JEE Main 2023" },
 ];
 
 export default function Skills() {
@@ -72,7 +57,6 @@ export default function Skills() {
             </div>
           ))}
 
-          {/* Competitive programming card spans remaining space */}
           <div
             className="reveal card p-8 sm:col-span-2 md:col-span-1"
             style={{ transitionDelay: "0.35s" }}
@@ -118,6 +102,7 @@ export default function Skills() {
             </div>
           ))}
         </div>
+
       </div>
     </section>
   );
