@@ -1,3 +1,5 @@
+import DevAvatar from "./DevAvatar";
+
 export default function About() {
   return (
     <section id="about" className="py-32 md:py-40 px-6 grid-bg">
@@ -87,20 +89,13 @@ export default function About() {
 
           {/* Right — avatar + quick facts */}
           <div className="reveal-right flex flex-col items-center gap-8" style={{ transitionDelay: "0.15s" }}>
-            <div className="relative">
-              <div
-                className="w-56 h-56 md:w-72 md:h-72 flex items-center justify-center"
-                style={{
-                  border: "1px solid rgba(201,168,76,0.2)",
-                  background: "rgba(201,168,76,0.02)",
-                }}
-              >
-                <span className="text-[100px] select-none">👨‍💻</span>
-              </div>
-              <span className="absolute top-0 left-0 w-4 h-4 border-t border-l" style={{ borderColor: "var(--gold)" }} />
-              <span className="absolute top-0 right-0 w-4 h-4 border-t border-r" style={{ borderColor: "var(--gold)" }} />
-              <span className="absolute bottom-0 left-0 w-4 h-4 border-b border-l" style={{ borderColor: "var(--gold)" }} />
-              <span className="absolute bottom-0 right-0 w-4 h-4 border-b border-r" style={{ borderColor: "var(--gold)" }} />
+            <div className="relative w-full max-w-[300px]">
+              {/* Corner accents */}
+              <span className="absolute top-4 left-4 w-4 h-4 border-t border-l z-10 pointer-events-none" style={{ borderColor: "var(--gold)" }} />
+              <span className="absolute top-4 right-4 w-4 h-4 border-t border-r z-10 pointer-events-none" style={{ borderColor: "var(--gold)" }} />
+              <span className="absolute bottom-4 left-4 w-4 h-4 border-b border-l z-10 pointer-events-none" style={{ borderColor: "var(--gold)" }} />
+              <span className="absolute bottom-4 right-4 w-4 h-4 border-b border-r z-10 pointer-events-none" style={{ borderColor: "var(--gold)" }} />
+              <DevAvatar />
             </div>
 
             {/* Competitive programming */}
