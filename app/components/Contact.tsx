@@ -9,16 +9,40 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
+    // Replace with Formspree/EmailJS/your API endpoint
     await new Promise((r) => setTimeout(r, 1200));
     setStatus("sent");
     setForm({ name: "", email: "", message: "" });
   };
 
   const inputClass =
-    "w-full bg-transparent border-b border-white/15 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#c9a84c] transition-colors duration-300";
+    "w-full bg-transparent border-b border-white/12 py-3 text-sm text-white placeholder-white/18 focus:outline-none focus:border-[#c9a84c] transition-colors duration-300";
+
+  const socials = [
+    {
+      label: "Email",
+      value: "paalsahil04@gmail.com",
+      href: "mailto:paalsahil04@gmail.com",
+    },
+    {
+      label: "GitHub",
+      value: "github.com/sahilforkshere",
+      href: "https://github.com/sahilforkshere",
+    },
+    {
+      label: "LinkedIn",
+      value: "linkedin.com/in/sahilpal",
+      href: "https://linkedin.com/in/sahilpal",
+    },
+    {
+      label: "LeetCode",
+      value: "sahil_100804",
+      href: "https://leetcode.com/sahil_100804",
+    },
+  ];
 
   return (
-    <section id="contact" className="py-32 md:py-40 px-6">
+    <section id="contact" className="py-32 md:py-40 px-6 grid-bg">
       <div className="max-w-6xl mx-auto">
 
         <div className="reveal flex items-center gap-4 mb-16">
@@ -42,16 +66,12 @@ export default function Contact() {
               className="reveal text-sm text-white/40 leading-relaxed mb-12 max-w-sm"
               style={{ transitionDelay: "0.2s" }}
             >
-              Have a project in mind, a role to fill, or just want to say hi?
-              My inbox is always open.
+              Open to full-time roles, freelance projects, and interesting collaborations.
+              My inbox is always open — say hi.
             </p>
 
             <div className="reveal space-y-6" style={{ transitionDelay: "0.3s" }}>
-              {[
-                { label: "Email", value: "sahil@email.com", href: "mailto:sahil@email.com" },
-                { label: "GitHub", value: "github.com/sahilpal", href: "https://github.com/sahilpal" },
-                { label: "LinkedIn", value: "linkedin.com/in/sahilpal", href: "https://linkedin.com/in/sahilpal" },
-              ].map((item) => (
+              {socials.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}
@@ -59,10 +79,10 @@ export default function Contact() {
                   rel="noopener noreferrer"
                   className="flex items-start gap-6 group"
                 >
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-white/20 w-16 pt-0.5 shrink-0 group-hover:text-[#c9a84c] transition-colors">
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-white/20 w-16 pt-0.5 shrink-0 group-hover:text-[#c9a84c] transition-colors duration-300">
                     {item.label}
                   </span>
-                  <span className="text-sm text-white/50 group-hover:text-white transition-colors duration-300 border-b border-transparent group-hover:border-white/20 pb-0.5">
+                  <span className="text-sm text-white/50 group-hover:text-white transition-colors duration-300 border-b border-transparent group-hover:border-white/15 pb-0.5">
                     {item.value}
                   </span>
                 </a>
@@ -70,14 +90,14 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Right: form */}
+          {/* Form */}
           <form
             onSubmit={handleSubmit}
             className="reveal space-y-8"
             style={{ transitionDelay: "0.15s" }}
           >
             <div>
-              <label className="text-[10px] tracking-[0.2em] uppercase text-white/25 block mb-2">Name</label>
+              <label className="text-[10px] tracking-[0.2em] uppercase text-white/22 block mb-2">Name</label>
               <input
                 type="text"
                 required
@@ -88,7 +108,7 @@ export default function Contact() {
               />
             </div>
             <div>
-              <label className="text-[10px] tracking-[0.2em] uppercase text-white/25 block mb-2">Email</label>
+              <label className="text-[10px] tracking-[0.2em] uppercase text-white/22 block mb-2">Email</label>
               <input
                 type="email"
                 required
@@ -99,30 +119,30 @@ export default function Contact() {
               />
             </div>
             <div>
-              <label className="text-[10px] tracking-[0.2em] uppercase text-white/25 block mb-2">Message</label>
+              <label className="text-[10px] tracking-[0.2em] uppercase text-white/22 block mb-2">Message</label>
               <textarea
                 required
                 rows={4}
                 value={form.message}
                 onChange={(e) => setForm({ ...form, message: e.target.value })}
                 className={`${inputClass} resize-none`}
-                placeholder="Tell me about your project..."
+                placeholder="Tell me about your project or opportunity..."
               />
             </div>
 
             <button
               type="submit"
               disabled={status !== "idle"}
-              className="group flex items-center gap-4 text-xs tracking-[0.18em] uppercase text-white disabled:opacity-50 transition-all duration-300"
+              className="group flex items-center gap-4 text-xs tracking-[0.18em] uppercase text-white disabled:opacity-50 transition-all duration-300 hover:gap-6"
             >
               <span
-                className="w-10 h-px transition-all duration-500 group-hover:w-16"
+                className="h-px transition-all duration-500 w-10 group-hover:w-14"
                 style={{ background: "var(--gold)" }}
               />
               <span className="group-hover:text-[#c9a84c] transition-colors duration-300">
                 {status === "idle" && "Send Message"}
                 {status === "sending" && "Sending..."}
-                {status === "sent" && "Sent ✓"}
+                {status === "sent" && "Message Sent ✓"}
               </span>
             </button>
           </form>

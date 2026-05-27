@@ -10,8 +10,8 @@ const bebasNeue = Bebas_Neue({
 });
 
 export const metadata: Metadata = {
-  title: "Sahil Pal • Software Engineer",
-  description: "Full Stack Web Developer — building modern web experiences.",
+  title: "Sahil Pal • Software Engineer & Full Stack Developer",
+  description: "Software Engineer at Stealth Startup. Full Stack Web Developer — building fast, scalable, and beautiful web experiences.",
 };
 
 export default function RootLayout({

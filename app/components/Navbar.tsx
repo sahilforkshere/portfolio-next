@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 
 const links = [
   { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
+  { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
+  { label: "Skills", href: "#skills" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -28,14 +29,14 @@ export default function Navbar() {
       <div
         className="mx-4 mt-4 rounded-sm px-6 py-3 flex items-center justify-between"
         style={{
-          background: "rgba(0,0,0,0.85)",
-          backdropFilter: "blur(20px)",
+          background: "rgba(0,0,0,0.88)",
+          backdropFilter: "blur(24px)",
           border: "1px solid rgba(255,255,255,0.07)",
         }}
       >
         <a
           href="#hero"
-          className="font-display text-xl tracking-widest text-white"
+          className="text-xl tracking-widest text-white"
           style={{ fontFamily: "var(--font-bebas)" }}
         >
           SP.
@@ -55,7 +56,7 @@ export default function Navbar() {
           ))}
           <li>
             <a
-              href="#contact"
+              href="mailto:paalsahil04@gmail.com"
               className="text-xs tracking-[0.18em] uppercase px-4 py-2 border border-[#c9a84c]/40 text-[#c9a84c] hover:border-[#c9a84c] hover:bg-[#c9a84c]/10 transition-all duration-300"
             >
               Hire Me

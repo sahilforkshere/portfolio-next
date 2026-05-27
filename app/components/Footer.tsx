@@ -1,28 +1,29 @@
 export default function Footer() {
   return (
-    <footer className="py-10 px-6 border-t border-white/[0.06]">
+    <footer className="py-10 px-6 border-t border-white/[0.05]">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-xs tracking-[0.15em] uppercase text-white/20">
+        <p className="text-xs tracking-[0.15em] uppercase text-white/18">
           © {new Date().getFullYear()} Sahil Pal
         </p>
         <p
-          className="text-lg tracking-widest text-white/10"
+          className="text-xl tracking-widest text-white/8"
           style={{ fontFamily: "var(--font-bebas)" }}
         >
           SAHIL PAL
         </p>
         <div className="flex gap-6">
           {[
-            { l: "GitHub", h: "https://github.com/sahilpal" },
+            { l: "GitHub", h: "https://github.com/sahilforkshere" },
             { l: "LinkedIn", h: "https://linkedin.com/in/sahilpal" },
-            { l: "Twitter", h: "https://twitter.com/sahilpal" },
+            { l: "LeetCode", h: "https://leetcode.com/sahil_100804" },
+            { l: "Codeforces", h: "https://codeforces.com/profile/codesahil.c" },
           ].map((x) => (
             <a
               key={x.l}
               href={x.h}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[11px] tracking-[0.15em] uppercase text-white/20 hover:text-[#c9a84c] transition-colors duration-300"
+              className="text-[11px] tracking-[0.15em] uppercase text-white/18 hover:text-[#c9a84c] transition-colors duration-300"
             >
               {x.l}
             </a>
