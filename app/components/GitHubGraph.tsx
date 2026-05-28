@@ -52,8 +52,9 @@ export default function GitHubGraph() {
         });
         setMonths(ms);
 
-        const yr = new Date().getFullYear();
-        setTotal(data.total[yr] ?? data.total[yr - 1] ?? 0);
+        /* sum directly from the contributions array — avoids year-key mismatch */
+        const counted = data.contributions.reduce((s: number, d: Day) => s + d.count, 0);
+        setTotal(counted);
       })
       .catch(() => setErr(true));
   }, []);

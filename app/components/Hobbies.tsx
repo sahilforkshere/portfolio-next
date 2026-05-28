@@ -6,7 +6,12 @@ import { useState, useEffect } from "react";
 ═══════════════════════════════════════════ */
 
 const PLAYLIST_URL = "https://music.apple.com/in/playlist/calm/pl.u-MDAWkg6TAKyd7VR";
-const EMBED_URL    = "https://embed.music.apple.com/in/playlist/calm/pl.u-MDAWkg6TAKyd7VR";
+
+const TOP_SONGS = [
+  { title: "The Night We Met",  artist: "Lord Huron", query: "the night we met lord huron" },
+  { title: "Piano Man",         artist: "Billy Joel",  query: "piano man billy joel"        },
+  { title: "Sweet But Psycho",  artist: "Ava Max",     query: "sweet but psycho ava max"    },
+];
 
 const books = [
   {
@@ -86,33 +91,85 @@ const AppleMusicIcon = () => (
 /* ═══════════════════════════════════════════
    MUSIC CARD
 ═══════════════════════════════════════════ */
-function MusicCard({ active }: { active: boolean }) {
+function MusicCard({ active, songArt }: { active: boolean; songArt: Record<string, string> }) {
   const bars = [55, 88, 38, 100, 60, 80, 42];
+  const [hovered, setHovered] = useState<number | null>(null);
+
   return (
-    <div className="flex flex-col items-center gap-5">
-      <svg viewBox="0 0 120 85" className="w-28 h-auto">
-        <path d="M14 52 Q14 14 60 14 Q106 14 106 52"
-          stroke="rgba(255,255,255,0.45)" strokeWidth="4.5" fill="none" strokeLinecap="round" />
-        <rect x="4" y="46" width="22" height="32" rx="9"
-          fill={active ? "rgba(167,139,250,0.2)" : "rgba(255,255,255,0.05)"}
-          stroke={active ? "rgba(167,139,250,0.8)" : "rgba(255,255,255,0.2)"}
-          strokeWidth="1.8" style={{ transition: "all 0.4s" }} />
-        <rect x="94" y="46" width="22" height="32" rx="9"
-          fill={active ? "rgba(167,139,250,0.2)" : "rgba(255,255,255,0.05)"}
-          stroke={active ? "rgba(167,139,250,0.8)" : "rgba(255,255,255,0.2)"}
-          strokeWidth="1.8" style={{ transition: "all 0.4s" }} />
-        {active && <circle cx="60" cy="52" r="5" fill="rgba(167,139,250,0.4)"
-          style={{ animation: "hbPulse 1s ease-in-out infinite" }} />}
-      </svg>
-      <div className="flex items-end gap-1.5" style={{ height: 44 }}>
-        {bars.map((h, i) => (
-          <div key={i} className="w-2.5 rounded-sm" style={{
-            background: active ? `rgba(167,139,250,${0.5 + i * 0.07})` : "rgba(255,255,255,0.12)",
-            height: active ? `${h}%` : "20%",
-            transition: `height 0.15s ease ${i * 0.05}s, background 0.3s`,
-            animation: active ? `hbEq${i} ${0.55 + i * 0.08}s ease-in-out infinite alternate` : "none",
-          }} />
-        ))}
+    <div className="flex flex-col items-center gap-5 w-full">
+      {/* Headphones + equalizer */}
+      <div className="flex flex-col items-center gap-3">
+        <svg viewBox="0 0 120 85" className="w-20 h-auto">
+          <path d="M14 52 Q14 14 60 14 Q106 14 106 52"
+            stroke="rgba(255,255,255,0.45)" strokeWidth="4.5" fill="none" strokeLinecap="round" />
+          <rect x="4" y="46" width="22" height="32" rx="9"
+            fill={active ? "rgba(167,139,250,0.2)" : "rgba(255,255,255,0.05)"}
+            stroke={active ? "rgba(167,139,250,0.8)" : "rgba(255,255,255,0.2)"}
+            strokeWidth="1.8" style={{ transition: "all 0.4s" }} />
+          <rect x="94" y="46" width="22" height="32" rx="9"
+            fill={active ? "rgba(167,139,250,0.2)" : "rgba(255,255,255,0.05)"}
+            stroke={active ? "rgba(167,139,250,0.8)" : "rgba(255,255,255,0.2)"}
+            strokeWidth="1.8" style={{ transition: "all 0.4s" }} />
+          {active && <circle cx="60" cy="52" r="5" fill="rgba(167,139,250,0.4)"
+            style={{ animation: "hbPulse 1s ease-in-out infinite" }} />}
+        </svg>
+        <div className="flex items-end gap-1" style={{ height: 28 }}>
+          {bars.map((h, i) => (
+            <div key={i} style={{
+              width: 6, borderRadius: 2,
+              background: active ? `rgba(167,139,250,${0.45 + i * 0.07})` : "rgba(255,255,255,0.1)",
+              height: active ? `${h}%` : "20%",
+              transition: `height 0.15s ease ${i * 0.05}s, background 0.3s`,
+              animation: active ? `hbEq${i} ${0.55 + i * 0.08}s ease-in-out infinite alternate` : "none",
+            }} />
+          ))}
+        </div>
+      </div>
+
+      {/* Album art — same style as books/movies */}
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", gap: 10, width: "100%" }}>
+        {TOP_SONGS.map((s, i) => {
+          const isHov = hovered === i;
+          return (
+            <div
+              key={s.title}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+              style={{
+                width: 72, height: 72, flexShrink: 0, borderRadius: 4,
+                overflow: "hidden", position: "relative",
+                transform: isHov ? "translateY(-10px) scale(1.06)" : "translateY(0) scale(1)",
+                transition: "all 0.25s cubic-bezier(0.34,1.56,0.64,1)",
+                boxShadow: isHov
+                  ? "0 16px 32px rgba(0,0,0,0.7), 0 0 0 2px rgba(167,139,250,0.7)"
+                  : "0 6px 16px rgba(0,0,0,0.5)",
+                background: "rgba(167,139,250,0.1)",
+                border: `1px solid ${isHov ? "rgba(167,139,250,0.6)" : "rgba(255,255,255,0.08)"}`,
+                cursor: "default",
+              }}
+            >
+              {songArt[s.title] ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={songArt[s.title]} alt={s.title}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              ) : (
+                <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, opacity: 0.25 }}>♪</div>
+              )}
+              {/* hover overlay with title */}
+              {isHov && (
+                <div style={{
+                  position: "absolute", inset: 0,
+                  background: "linear-gradient(transparent 30%, rgba(0,0,0,0.85))",
+                  display: "flex", flexDirection: "column", justifyContent: "flex-end",
+                  padding: "5px 5px 6px",
+                }}>
+                  <p style={{ fontSize: 8, color: "rgba(255,255,255,0.9)", margin: 0, letterSpacing: "0.05em", lineHeight: 1.3 }}>{s.title}</p>
+                  <p style={{ fontSize: 7, color: "rgba(167,139,250,0.8)", margin: 0 }}>{s.artist}</p>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -229,13 +286,13 @@ function MoviesCard({ active }: { active: boolean }) {
                 flexShrink: 0,
                 borderRadius: 3,
                 overflow: "hidden",
+                position: "relative",
                 transform: isHov ? "translateY(-10px) scale(1.05)" : active ? "translateY(0)" : "translateY(0)",
                 transition: "all 0.25s cubic-bezier(0.34,1.56,0.64,1)",
                 boxShadow: isHov
                   ? `0 16px 32px rgba(0,0,0,0.7), 0 0 0 2px ${w.color}`
                   : "0 6px 16px rgba(0,0,0,0.5)",
                 cursor: "default",
-                position: "relative",
               }}
             >
               {/* loading placeholder */}
@@ -249,12 +306,14 @@ function MoviesCard({ active }: { active: boolean }) {
                   {w.title}
                 </div>
               )}
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={posters[w.imdbId] ?? ""}
-                alt={w.title}
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: posters[w.imdbId] ? "block" : "none" }}
-              />
+              {posters[w.imdbId] && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={posters[w.imdbId]}
+                  alt={w.title}
+                  style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", position: "absolute", inset: 0 }}
+                />
+              )}
               {/* hover label */}
               {isHov && (
                 <div style={{
@@ -335,7 +394,23 @@ const hobbies = [
 ];
 
 export default function Hobbies() {
-  const [activeKey, setActiveKey] = useState<string | null>(null);
+  const [activeKey, setActiveKey]   = useState<string | null>(null);
+  const [songArt, setSongArt]       = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    TOP_SONGS.forEach(s => {
+      fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(s.query)}&entity=song&limit=1`)
+        .then(r => r.json())
+        .then((data: { results?: { artworkUrl100?: string }[] }) => {
+          const raw = data.results?.[0]?.artworkUrl100;
+          if (raw) {
+            /* swap 100x100 → 300x300 for sharper art */
+            setSongArt(prev => ({ ...prev, [s.title]: raw.replace("100x100bb", "300x300bb") }));
+          }
+        })
+        .catch(() => {});
+    });
+  }, []);
 
   return (
     <section id="hobbies" className="py-32 md:py-40 px-6">
@@ -378,7 +453,7 @@ export default function Hobbies() {
                       borderBottom: `1px solid ${isActive ? h.accent : "rgba(255,255,255,0.05)"}`,
                       padding: "2rem 1.5rem",
                     }}>
-                    {h.key === "music"  && <MusicCard  active={isActive} />}
+                    {h.key === "music"  && <MusicCard  active={isActive} songArt={songArt} />}
                     {h.key === "books"  && <BooksCard  active={isActive} />}
                     {h.key === "movies" && <MoviesCard active={isActive} />}
                   </div>
@@ -395,7 +470,7 @@ export default function Hobbies() {
                     </h3>
                     <p className="text-sm text-white/35 leading-relaxed">{h.desc}</p>
 
-                    {/* Apple Music badge on music card */}
+                    {/* Music — Apple Music playlist badge (matches other cards) */}
                     {h.key === "music" && (
                       <a href={PLAYLIST_URL} target="_blank" rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
@@ -407,7 +482,7 @@ export default function Hobbies() {
                           background: isActive ? "rgba(167,139,250,0.07)" : "transparent",
                         }}>
                         <AppleMusicIcon />
-                        <span>Calm — My Playlist</span>
+                        <span>Listen on Apple Music</span>
                       </a>
                     )}
 
@@ -438,35 +513,6 @@ export default function Hobbies() {
               </div>
             );
           })}
-        </div>
-
-        {/* ── Apple Music embed ── */}
-        <div className="reveal mt-16" style={{ transitionDelay: "0.2s" }}>
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-4">
-              <span className="line-gold" />
-              <div className="flex items-center gap-2.5" style={{ color: "rgba(167,139,250,0.7)" }}>
-                <AppleMusicIcon />
-                <span style={{ fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase" }}>Now Listening</span>
-              </div>
-            </div>
-            <a href={PLAYLIST_URL} target="_blank" rel="noopener noreferrer"
-              style={{ fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(255,255,255,0.2)", textDecoration: "none", transition: "color 0.2s" }}
-              onMouseEnter={e => (e.currentTarget.style.color = "rgba(167,139,250,0.8)")}
-              onMouseLeave={e => (e.currentTarget.style.color = "rgba(255,255,255,0.2)")}>
-              Open in Apple Music ↗
-            </a>
-          </div>
-          <div style={{ border: "1px solid rgba(167,139,250,0.18)", overflow: "hidden" }}>
-            <iframe
-              allow="autoplay *; encrypted-media *; fullscreen *; clipboard-write"
-              frameBorder="0"
-              height="450"
-              style={{ width: "100%", display: "block" }}
-              sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation"
-              src={EMBED_URL}
-            />
-          </div>
         </div>
 
       </div>
