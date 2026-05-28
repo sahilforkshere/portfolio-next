@@ -8,12 +8,15 @@ const HeroBackground = dynamic(() => import("./HeroBackground"), { ssr: false })
 const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%";
 
 function ScrambleText({ text, delay = 0 }: { text: string; delay?: number }) {
-  const [display, setDisplay] = useState(() => text.split("").map(() => CHARS[Math.floor(Math.random() * CHARS.length)]).join(""));
+  // Start with real text so server & first client render match (no hydration error)
+  const [display, setDisplay] = useState(text);
 
   useEffect(() => {
     let frame = 0;
     const totalFrames = 28;
+    // Kick off scramble after mount
     const t = setTimeout(() => {
+      setDisplay(text.split("").map(() => CHARS[Math.floor(Math.random() * CHARS.length)]).join(""));
       const id = setInterval(() => {
         frame++;
         setDisplay(text.split("").map((char, i) => {
@@ -22,6 +25,7 @@ function ScrambleText({ text, delay = 0 }: { text: string; delay?: number }) {
         }).join(""));
         if (frame >= totalFrames) clearInterval(id);
       }, 40);
+      return () => clearInterval(id);
     }, delay);
     return () => clearTimeout(t);
   }, [text, delay]);
