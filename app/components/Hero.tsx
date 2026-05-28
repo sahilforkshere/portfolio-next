@@ -5,6 +5,30 @@ import dynamic from "next/dynamic";
 
 const HeroBackground = dynamic(() => import("./HeroBackground"), { ssr: false });
 
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%";
+
+function ScrambleText({ text, delay = 0 }: { text: string; delay?: number }) {
+  const [display, setDisplay] = useState(() => text.split("").map(() => CHARS[Math.floor(Math.random() * CHARS.length)]).join(""));
+
+  useEffect(() => {
+    let frame = 0;
+    const totalFrames = 28;
+    const t = setTimeout(() => {
+      const id = setInterval(() => {
+        frame++;
+        setDisplay(text.split("").map((char, i) => {
+          if (i < Math.floor((frame / totalFrames) * text.length)) return char;
+          return CHARS[Math.floor(Math.random() * CHARS.length)];
+        }).join(""));
+        if (frame >= totalFrames) clearInterval(id);
+      }, 40);
+    }, delay);
+    return () => clearTimeout(t);
+  }, [text, delay]);
+
+  return <>{display}</>;
+}
+
 export default function Hero() {
   const [scrollY, setScrollY] = useState(0);
   const heroRef = useRef<HTMLElement>(null);
@@ -53,17 +77,11 @@ export default function Hero() {
         </p>
 
         {/* The big name */}
-        <h1
-          className="name-striped"
-          style={{ fontSize: "clamp(72px, 16vw, 260px)" }}
-        >
-          SAHIL
+        <h1 className="name-striped" style={{ fontSize: "clamp(72px, 16vw, 260px)" }}>
+          <ScrambleText text="SAHIL" delay={200} />
         </h1>
-        <h1
-          className="name-striped"
-          style={{ fontSize: "clamp(72px, 16vw, 260px)" }}
-        >
-          PAL
+        <h1 className="name-striped" style={{ fontSize: "clamp(72px, 16vw, 260px)" }}>
+          <ScrambleText text="PAL" delay={500} />
         </h1>
 
         {/* Underline */}

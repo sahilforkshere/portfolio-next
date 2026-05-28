@@ -1,3 +1,6 @@
+"use client";
+import { useRef, MouseEvent } from "react";
+
 const projects = [
   {
     num: "01",
@@ -52,6 +55,41 @@ const IconGithub = () => (
   </svg>
 );
 
+/* ── 3-D tilt card ───────────────────────────────────────── */
+function TiltCard({ children, delay }: { children: React.ReactNode; delay: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const onMove = (e: MouseEvent<HTMLDivElement>) => {
+    const el = ref.current;
+    if (!el) return;
+    const { left, top, width, height } = el.getBoundingClientRect();
+    const x = (e.clientX - left) / width  - 0.5;   // -0.5 → 0.5
+    const y = (e.clientY - top)  / height - 0.5;
+    el.style.transform = `perspective(800px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg) scale(1.01)`;
+  };
+
+  const onLeave = () => {
+    if (ref.current) ref.current.style.transform = "perspective(800px) rotateX(0deg) rotateY(0deg) scale(1)";
+  };
+
+  return (
+    <div
+      ref={ref}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      className="reveal card group p-8"
+      style={{
+        transitionDelay: delay,
+        transition: "transform 0.15s ease, opacity 0.6s ease, border-color 0.3s",
+        transformStyle: "preserve-3d",
+        willChange: "transform",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function Projects() {
   return (
     <section id="projects" className="py-32 md:py-40 px-6 grid-bg">
@@ -73,11 +111,7 @@ export default function Projects() {
 
         <div className="space-y-px bg-white/[0.06]">
           {projects.map((p, i) => (
-            <div
-              key={p.num}
-              className="reveal card group p-8"
-              style={{ transitionDelay: `${0.08 * i}s` }}
-            >
+            <TiltCard key={p.num} delay={`${0.08 * i}s`}>
               <div className="grid md:grid-cols-[1fr_auto] gap-6 items-start">
                 {/* Left */}
                 <div>
@@ -104,7 +138,6 @@ export default function Projects() {
 
                   <p className="text-sm text-white/40 leading-relaxed mb-5 max-w-2xl">{p.desc}</p>
 
-                  {/* Highlight metrics */}
                   <ul className="space-y-1.5 mb-5">
                     {p.highlights.map((h) => (
                       <li key={h} className="flex items-center gap-2.5 text-xs text-white/35">
@@ -114,12 +147,11 @@ export default function Projects() {
                     ))}
                   </ul>
 
-                  {/* Tech tags */}
                   <div className="flex flex-wrap gap-2">
                     {p.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="text-[11px] tracking-wider px-2.5 py-1 border border-white/10 text-white/35"
+                        className="text-[11px] tracking-wider px-2.5 py-1 border border-white/10 text-white/35 group-hover:border-[rgba(201,168,76,0.2)] group-hover:text-white/50 transition-all duration-300"
                       >
                         {tag}
                       </span>
@@ -133,7 +165,7 @@ export default function Projects() {
                     href={p.github}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-white/30 hover:text-white transition-colors duration-300"
+                    className="flex items-center gap-2 text-xs tracking-[0.15em] uppercase text-white/30 hover:text-[#c9a84c] transition-colors duration-300"
                     aria-label="GitHub"
                   >
                     <IconGithub />
@@ -154,7 +186,7 @@ export default function Projects() {
                   )}
                 </div>
               </div>
-            </div>
+            </TiltCard>
           ))}
         </div>
 

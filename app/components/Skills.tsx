@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 const SkillsSphere = dynamic(() => import("./SkillsSphere"), { ssr: false });
 
@@ -11,11 +12,45 @@ const categories = [
 ];
 
 const stats = [
-  { n: "3+",    label: "Production Projects" },
-  { n: "2+",    label: "Years Coding" },
-  { n: "300+",  label: "DSA Problems Solved" },
-  { n: "99%ile",label: "JEE Main 2023" },
+  { n: "3+",    label: "Production Projects",  count: 3,   suffix: "+" },
+  { n: "2+",    label: "Years Coding",          count: 2,   suffix: "+" },
+  { n: "300+",  label: "DSA Problems Solved",   count: 300, suffix: "+" },
+  { n: "99%ile",label: "JEE Main 2023",         count: 99,  suffix: "%ile" },
 ];
+
+function CountUp({ target, suffix }: { target: number; suffix: string }) {
+  const [val, setVal]   = useState(0);
+  const ref             = useRef<HTMLParagraphElement>(null);
+  const started         = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !started.current) {
+        started.current = true;
+        const duration = 1400;
+        const steps    = 50;
+        const step     = duration / steps;
+        let i = 0;
+        const t = setInterval(() => {
+          i++;
+          setVal(Math.round(target * (i / steps)));
+          if (i >= steps) clearInterval(t);
+        }, step);
+      }
+    }, { threshold: 0.5 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [target]);
+
+  return (
+    <p ref={ref} className="text-4xl md:text-5xl mb-2"
+      style={{ fontFamily: "var(--font-bebas)", color: "var(--gold-light)" }}>
+      {val}{suffix}
+    </p>
+  );
+}
 
 export default function Skills() {
   return (
@@ -93,7 +128,7 @@ export default function Skills() {
           </div>
         </div>
 
-        {/* Stats row */}
+        {/* Stats row — numbers count up on scroll */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-white/[0.06] mt-px">
           {stats.map((s, i) => (
             <div
@@ -101,12 +136,7 @@ export default function Skills() {
               className="reveal card p-8 text-center"
               style={{ transitionDelay: `${0.08 * i}s` }}
             >
-              <p
-                className="text-4xl md:text-5xl mb-2"
-                style={{ fontFamily: "var(--font-bebas)", color: "var(--gold-light)" }}
-              >
-                {s.n}
-              </p>
+              <CountUp target={s.count} suffix={s.suffix} />
               <p className="text-xs tracking-[0.15em] uppercase text-white/25">{s.label}</p>
             </div>
           ))}
