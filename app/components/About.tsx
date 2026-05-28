@@ -1,5 +1,6 @@
 import DevAvatar from "./DevAvatar";
 import PortfolioTerminal from "./PortfolioTerminal";
+import AskSahil from "./AskSahil";
 
 export default function About() {
   return (
@@ -101,6 +102,7 @@ export default function About() {
             </div>
 
             <PortfolioTerminal />
+            <AskSahil />
           </div>
         </div>
       </div>

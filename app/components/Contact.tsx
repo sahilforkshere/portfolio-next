@@ -4,16 +4,25 @@ import { useState } from "react";
 import GitHubGraph from "./GitHubGraph";
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [form, setForm]     = useState({ name: "", email: "", message: "" });
+  const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("sending");
-    // Replace with Formspree/EmailJS/your API endpoint
-    await new Promise((r) => setTimeout(r, 1200));
-    setStatus("sent");
-    setForm({ name: "", email: "", message: "" });
+    try {
+      const res = await fetch("/api/contact", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(form),
+      });
+      if (!res.ok) throw new Error("Failed");
+      setStatus("sent");
+      setForm({ name: "", email: "", message: "" });
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
   };
 
   const inputClass =
@@ -134,7 +143,7 @@ export default function Contact() {
 
             <button
               type="submit"
-              disabled={status !== "idle"}
+              disabled={status === "sending" || status === "sent"}
               className="group flex items-center gap-4 text-xs tracking-[0.18em] uppercase text-white disabled:opacity-50 transition-all duration-300 hover:gap-6"
             >
               <span
@@ -142,9 +151,10 @@ export default function Contact() {
                 style={{ background: "var(--gold)" }}
               />
               <span className="group-hover:text-[#c9a84c] transition-colors duration-300">
-                {status === "idle" && "Send Message"}
+                {status === "idle"    && "Send Message"}
                 {status === "sending" && "Sending..."}
-                {status === "sent" && "Message Sent ✓"}
+                {status === "sent"    && "Message Sent ✓"}
+                {status === "error"   && "Failed — try again"}
               </span>
             </button>
           </form>
