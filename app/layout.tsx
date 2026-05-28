@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Inter, Bebas_Neue } from "next/font/google";
-import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { Analytics } from "@vercel/analytics/react";
@@ -16,14 +15,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} ${bebasNeue.variable} h-full antialiased`} suppressHydrationWarning>
-      <body className="min-h-full flex flex-col overflow-x-hidden">
-        {/* Runs before hydration — prevents flash of wrong theme */}
-        <Script id="theme-init" strategy="beforeInteractive">{`
-          (function(){
-            var t = localStorage.getItem('sp-theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', t);
-          })();
-        `}</Script>
+      <body className="min-h-full flex flex-col overflow-x-hidden" suppressHydrationWarning>
         <ThemeProvider>{children}</ThemeProvider>
         <Analytics />
       </body>

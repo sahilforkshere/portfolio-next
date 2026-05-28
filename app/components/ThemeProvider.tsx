@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useLayoutEffect, useState } from "react";
 
 type Theme = "dark" | "light";
 interface Ctx { theme: Theme; toggle: () => void }
@@ -9,7 +9,9 @@ const ThemeCtx = createContext<Ctx>({ theme: "dark", toggle: () => {} });
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("dark");
 
-  useEffect(() => {
+  /* useLayoutEffect fires synchronously before the browser paints —
+     the same effect as the old inline <script>, but no React 19 warning. */
+  useLayoutEffect(() => {
     const saved = (localStorage.getItem("sp-theme") as Theme) ?? "dark";
     setTheme(saved);
     document.documentElement.setAttribute("data-theme", saved);

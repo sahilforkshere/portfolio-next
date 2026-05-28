@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 /* ═══════════════════════════════════════════
    DATA
@@ -46,32 +46,29 @@ const books = [
 const watchlist = [
   {
     title: "The Prestige",
+    imdbId: "tt0482571",
     type: "Movie",
     year: 2006,
-    genres: ["Thriller", "Mystery", "Sci-Fi"],
     rating: "8.5",
     meta: "Dir. Christopher Nolan",
-    imdb: "https://www.imdb.com/title/tt0482571/",
     color: "rgba(251,191,36,0.7)",
   },
   {
     title: "Dark",
+    imdbId: "tt5753856",
     type: "Series",
     year: 2017,
-    genres: ["Sci-Fi", "Mystery", "Thriller"],
     rating: "8.8",
     meta: "3 Seasons · Netflix",
-    imdb: "https://www.imdb.com/title/tt5753856/",
     color: "rgba(96,165,250,0.7)",
   },
   {
     title: "Dexter",
+    imdbId: "tt0773262",
     type: "Series",
     year: 2006,
-    genres: ["Crime", "Drama", "Thriller"],
     rating: "8.6",
     meta: "8 Seasons · Showtime",
-    imdb: "https://www.imdb.com/title/tt0773262/",
     color: "rgba(248,113,113,0.7)",
   },
 ];
@@ -194,71 +191,110 @@ function BooksCard({ active }: { active: boolean }) {
 }
 
 /* ═══════════════════════════════════════════
-   MOVIES CARD — film reel illustration
+   MOVIES CARD — poster wall + playlist
 ═══════════════════════════════════════════ */
 function MoviesCard({ active }: { active: boolean }) {
+  const [hovered, setHovered]   = useState<number | null>(null);
+  const [posters, setPosters]   = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    const key = process.env.NEXT_PUBLIC_OMDB_KEY;
+    if (!key) return;
+    watchlist.forEach(w => {
+      fetch(`https://www.omdbapi.com/?i=${w.imdbId}&apikey=${key}`)
+        .then(r => r.json())
+        .then((data: { Poster?: string }) => {
+          if (data.Poster && data.Poster !== "N/A") {
+            setPosters(prev => ({ ...prev, [w.imdbId]: data.Poster! }));
+          }
+        })
+        .catch(() => {});
+    });
+  }, []);
+
   return (
     <div className="flex flex-col items-center gap-5 w-full">
-      {/* Clapperboard SVG */}
-      <svg viewBox="0 0 120 90" className="w-32 h-auto">
-        {/* Board body */}
-        <rect x="8" y="28" width="104" height="58" rx="4"
-          fill={active ? "rgba(248,113,113,0.12)" : "rgba(255,255,255,0.04)"}
-          stroke={active ? "rgba(248,113,113,0.7)" : "rgba(255,255,255,0.18)"}
-          strokeWidth="1.5" style={{ transition: "all 0.4s" }} />
-        {/* Top bar */}
-        <rect x="8" y="16" width="104" height="16" rx="3"
-          fill={active ? "rgba(248,113,113,0.2)" : "rgba(255,255,255,0.08)"}
-          stroke={active ? "rgba(248,113,113,0.7)" : "rgba(255,255,255,0.2)"}
-          strokeWidth="1.5" style={{ transition: "all 0.4s" }} />
-        {/* Clapper stripes */}
-        {[0,1,2,3,4].map(i => (
-          <rect key={i} x={14 + i * 18} y="16" width="10" height="16"
-            fill={active ? (i%2===0 ? "rgba(248,113,113,0.5)" : "rgba(0,0,0,0.4)") : (i%2===0 ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.3)")}
-            style={{ transition: "fill 0.4s" }} />
-        ))}
-        {/* Play button */}
-        <polygon
-          points="46,45 46,69 72,57"
-          fill={active ? "rgba(248,113,113,0.8)" : "rgba(255,255,255,0.15)"}
-          style={{ transition: "fill 0.4s", animation: active ? "hbPulse 1.6s ease-in-out infinite" : "none" }} />
-        {/* Film holes left */}
-        {[36,50,64,78].map(y => (
-          <circle key={y} cx="20" cy={y} r="3.5"
-            fill={active ? "rgba(248,113,113,0.15)" : "rgba(255,255,255,0.06)"}
-            stroke={active ? "rgba(248,113,113,0.4)" : "rgba(255,255,255,0.12)"}
-            strokeWidth="1" style={{ transition: "all 0.3s" }} />
-        ))}
-        {/* Film holes right */}
-        {[36,50,64,78].map(y => (
-          <circle key={y} cx="100" cy={y} r="3.5"
-            fill={active ? "rgba(248,113,113,0.15)" : "rgba(255,255,255,0.06)"}
-            stroke={active ? "rgba(248,113,113,0.4)" : "rgba(255,255,255,0.12)"}
-            strokeWidth="1" style={{ transition: "all 0.3s" }} />
-        ))}
-      </svg>
+      {/* Poster wall */}
+      <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "center", gap: 10, width: "100%" }}>
+        {watchlist.map((w, i) => {
+          const isHov = hovered === i;
+          return (
+            <div
+              key={w.title}
+              onMouseEnter={() => setHovered(i)}
+              onMouseLeave={() => setHovered(null)}
+              style={{
+                width: 72,
+                height: isHov ? 118 : 108,
+                flexShrink: 0,
+                borderRadius: 3,
+                overflow: "hidden",
+                transform: isHov ? "translateY(-10px) scale(1.05)" : active ? "translateY(0)" : "translateY(0)",
+                transition: "all 0.25s cubic-bezier(0.34,1.56,0.64,1)",
+                boxShadow: isHov
+                  ? `0 16px 32px rgba(0,0,0,0.7), 0 0 0 2px ${w.color}`
+                  : "0 6px 16px rgba(0,0,0,0.5)",
+                cursor: "default",
+                position: "relative",
+              }}
+            >
+              {/* loading placeholder */}
+              {!posters[w.imdbId] && (
+                <div style={{
+                  width: "100%", height: "100%",
+                  background: w.color.replace("0.7", "0.12"),
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: 9, color: w.color, letterSpacing: "0.1em", textAlign: "center", padding: 6,
+                }}>
+                  {w.title}
+                </div>
+              )}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={posters[w.imdbId] ?? ""}
+                alt={w.title}
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: posters[w.imdbId] ? "block" : "none" }}
+              />
+              {/* hover label */}
+              {isHov && (
+                <div style={{
+                  position: "absolute", bottom: 0, left: 0, right: 0,
+                  background: "linear-gradient(transparent, rgba(0,0,0,0.88))",
+                  padding: "18px 5px 6px",
+                  textAlign: "center",
+                }}>
+                  <p style={{ fontSize: 8, color: "rgba(255,255,255,0.9)", letterSpacing: "0.08em", margin: 0, lineHeight: 1.3 }}>
+                    {w.title}
+                  </p>
+                  <p style={{ fontSize: 7, color: w.color, margin: 0, letterSpacing: "0.05em" }}>★ {w.rating}</p>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
 
-      {/* Watchlist rows — like a playlist */}
-      <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 6 }}>
+      {/* Playlist-style watchlist */}
+      <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 5 }}>
         {watchlist.map((w, i) => (
           <div key={w.title} style={{
             display: "flex", alignItems: "center", gap: 10, padding: "6px 10px",
-            borderLeft: `2px solid ${active ? w.color : "rgba(255,255,255,0.08)"}`,
-            transition: `all 0.3s ease ${i * 0.06}s`,
+            borderLeft: `2px solid ${active ? w.color : "rgba(255,255,255,0.07)"}`,
             background: active ? w.color.replace("0.7","0.04") : "transparent",
+            transition: `all 0.3s ease ${i * 0.06}s`,
           }}>
-            <span style={{ fontFamily: "var(--font-bebas)", fontSize: 11, color: active ? w.color : "rgba(255,255,255,0.18)", letterSpacing: "0.12em", minWidth: 24 }}>
+            <span style={{ fontFamily: "var(--font-bebas)", fontSize: 11, color: active ? w.color : "rgba(255,255,255,0.18)", letterSpacing: "0.12em", minWidth: 22 }}>
               {String(i+1).padStart(2,"0")}
             </span>
             <div style={{ flex: 1 }}>
-              <p style={{ fontSize: 12, color: active ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.45)", letterSpacing: "0.04em", margin: 0 }}>
+              <p style={{ fontSize: 12, color: active ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)", letterSpacing: "0.03em", margin: 0 }}>
                 {w.title}
               </p>
-              <p style={{ fontSize: 9, color: "rgba(255,255,255,0.22)", letterSpacing: "0.1em", margin: 0 }}>
+              <p style={{ fontSize: 9, color: "rgba(255,255,255,0.2)", letterSpacing: "0.08em", margin: 0 }}>
                 {w.type} · {w.year}
               </p>
             </div>
-            <span style={{ fontSize: 10, color: active ? w.color : "rgba(255,255,255,0.2)", fontFamily: "var(--font-bebas)", letterSpacing: "0.05em" }}>
+            <span style={{ fontSize: 10, color: active ? w.color : "rgba(255,255,255,0.18)", fontFamily: "var(--font-bebas)" }}>
               ★ {w.rating}
             </span>
           </div>
