@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import GitHubGraph from "./GitHubGraph";
 
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -171,23 +172,12 @@ export default function Contact() {
             </a>
           </div>
 
-          {/* dark-theme activity graph — fits the portfolio palette */}
           <div style={{
-            border: "1px solid rgba(201,168,76,0.18)",
-            background: "rgba(0,0,0,0.6)",
-            overflow: "hidden",
+            border: "1px solid rgba(201,168,76,0.14)",
+            background: "rgba(0,0,0,0.4)",
+            padding: "20px 18px 14px",
           }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="https://github-readme-activity-graph.vercel.app/graph?username=sahilforkshere&bg_color=000000&color=c9a84c&line=c9a84c&point=e8c97a&area=true&hide_border=true&area_color=c9a84c"
-              alt="Sahil Pal GitHub activity graph"
-              style={{
-                display: "block",
-                width: "100%",
-                minWidth: 660,
-                height: "auto",
-              }}
-            />
+            <GitHubGraph />
           </div>
         </div>
 
