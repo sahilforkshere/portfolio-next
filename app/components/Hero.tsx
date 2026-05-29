@@ -135,7 +135,7 @@ export default function Hero() {
 
       {/* Scroll cue */}
       <div
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
         style={{ opacity: heroOpacity }}
       >
         <span className="text-white/20 text-[10px] tracking-[0.3em] uppercase">Scroll</span>

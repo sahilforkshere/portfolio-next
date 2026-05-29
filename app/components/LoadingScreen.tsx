@@ -1,65 +1,46 @@
 "use client";
 import { useEffect, useState } from "react";
 
-const greetings = [
-  { word: "Hello",       lang: "English" },
-  { word: "नमस्ते",      lang: "Hindi" },
-  { word: "Hola",        lang: "Spanish" },
-  { word: "Bonjour",     lang: "French" },
-  { word: "こんにちは",  lang: "Japanese" },
-  { word: "你好",        lang: "Chinese" },
-  { word: "Ciao",        lang: "Italian" },
-  { word: "Olá",         lang: "Portuguese" },
-  { word: "Hallo",       lang: "German" },
-  { word: "مرحبا",       lang: "Arabic" },
-];
-
-const DURATION = 260; // ms per greeting
-
 export default function LoadingScreen() {
-  const [idx, setIdx]         = useState(0);
-  const [exiting, setExiting] = useState(false);
-  const [gone, setGone]       = useState(false);
-  const [animKey, setAnimKey] = useState(0);
+  const [phase, setPhase] = useState<"enter" | "hold" | "exit" | "gone">("enter");
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+
+    // letters finish revealing ~600ms → hold
+    const t1 = setTimeout(() => setPhase("hold"), 600);
+    // line finishes drawing ~1000ms → brief hold then exit
+    const t2 = setTimeout(() => setPhase("exit"), 1400);
+    // fully gone after fade
+    const t3 = setTimeout(() => {
+      setPhase("gone");
+      document.body.style.overflow = "";
+    }, 2050);
+
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      document.body.style.overflow = "";
+    };
   }, []);
 
-  useEffect(() => {
-    if (gone) return;
-
-    if (idx < greetings.length - 1) {
-      const t = setTimeout(() => {
-        setIdx(i => i + 1);
-        setAnimKey(k => k + 1);
-      }, DURATION);
-      return () => clearTimeout(t);
-    } else {
-      const t = setTimeout(() => {
-        setExiting(true);
-        document.body.style.overflow = "";
-        setTimeout(() => setGone(true), 650);
-      }, DURATION + 120);
-      return () => clearTimeout(t);
-    }
-  }, [idx, gone]);
-
-  if (gone) return null;
-
-  const progress = ((idx + 1) / greetings.length) * 100;
+  if (phase === "gone") return null;
 
   return (
     <>
       <style>{`
-        @keyframes greet-in {
-          from { opacity: 0; transform: translateY(22px) scaleY(0.92); }
-          to   { opacity: 1; transform: translateY(0)   scaleY(1); }
+        @keyframes revealUp {
+          from { clip-path: inset(100% 0 0 0); opacity: 0; }
+          to   { clip-path: inset(0% 0 0 0);   opacity: 1; }
         }
-        @keyframes lang-in {
-          from { opacity: 0; transform: translateY(8px); }
-          to   { opacity: 0.35; transform: translateY(0); }
+        @keyframes drawLine {
+          from { transform: scaleX(0); }
+          to   { transform: scaleX(1); }
+        }
+        @keyframes fadeSubtitle {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
       `}</style>
 
@@ -73,82 +54,97 @@ export default function LoadingScreen() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          opacity: exiting ? 0 : 1,
-          transition: exiting ? "opacity 0.65s cubic-bezier(0.4,0,0.2,1)" : "none",
-          pointerEvents: exiting ? "none" : "all",
+          opacity:    phase === "exit" ? 0 : 1,
+          transform:  phase === "exit" ? "scale(1.04)" : "scale(1)",
+          transition: phase === "exit"
+            ? "opacity 0.55s cubic-bezier(0.4,0,0.2,1), transform 0.55s cubic-bezier(0.4,0,0.2,1)"
+            : "none",
+          pointerEvents: phase === "exit" ? "none" : "all",
         }}
       >
         {/* Corner mark */}
         <div style={{
           position: "absolute",
-          top: 28,
-          left: 28,
+          top: 28, left: 28,
           fontFamily: "var(--font-bebas)",
-          fontSize: 22,
-          letterSpacing: "0.12em",
-          color: "var(--gold)",
+          fontSize: 13,
+          letterSpacing: "0.35em",
+          color: "rgba(201,168,76,0.4)",
+          textTransform: "uppercase",
         }}>
-          SP.
+          Portfolio
         </div>
 
-        {/* Greeting */}
-        <div style={{ textAlign: "center", userSelect: "none" }}>
-          <p
-            key={animKey}
+        {/* Initials */}
+        <div style={{ position: "relative", userSelect: "none", textAlign: "center" }}>
+          {/* S and P reveal from bottom */}
+          <div style={{ display: "flex", alignItems: "flex-end", gap: "0.04em", lineHeight: 1 }}>
+            <span
+              style={{
+                fontFamily: "var(--font-bebas)",
+                fontSize: "clamp(7rem, 22vw, 18rem)",
+                color: "#fff",
+                letterSpacing: "-0.02em",
+                animation: "revealUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.1s both",
+                display: "block",
+              }}
+            >
+              S
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-bebas)",
+                fontSize: "clamp(7rem, 22vw, 18rem)",
+                color: "var(--gold)",
+                letterSpacing: "-0.02em",
+                animation: "revealUp 0.55s cubic-bezier(0.22,1,0.36,1) 0.22s both",
+                display: "block",
+              }}
+            >
+              P
+            </span>
+          </div>
+
+          {/* Gold underline draws left to right */}
+          <div
             style={{
-              fontFamily: "var(--font-bebas)",
-              fontSize: "clamp(3.5rem, 13vw, 10rem)",
-              color: "#c9a84c",
-              letterSpacing: "0.05em",
-              lineHeight: 1,
-              animation: `greet-in ${DURATION * 0.7}ms cubic-bezier(0.22,1,0.36,1) forwards`,
-              marginBottom: 10,
+              height: 2,
+              background: "linear-gradient(to right, var(--gold), var(--gold-light))",
+              transformOrigin: "left",
+              animation: "drawLine 0.5s cubic-bezier(0.22,1,0.36,1) 0.65s both",
+              marginTop: 6,
             }}
-          >
-            {greetings[idx].word}
-          </p>
+          />
+
+          {/* Subtitle fades in */}
           <p
-            key={`lang-${animKey}`}
             style={{
+              marginTop: 18,
               fontSize: 11,
-              letterSpacing: "0.35em",
-              color: "rgba(255,255,255,0.35)",
+              letterSpacing: "0.4em",
               textTransform: "uppercase",
-              animation: `lang-in ${DURATION * 0.6}ms ease forwards`,
+              color: "rgba(255,255,255,0.28)",
+              fontFamily: "var(--font-inter, sans-serif)",
+              animation: "fadeSubtitle 0.5s ease 1s both",
             }}
           >
-            {greetings[idx].lang}
+            Sahil Pal
           </p>
         </div>
 
-        {/* Progress bar */}
+        {/* Bottom progress line */}
         <div style={{
           position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
+          bottom: 0, left: 0, right: 0,
           height: 1,
-          background: "rgba(255,255,255,0.06)",
+          background: "rgba(255,255,255,0.05)",
         }}>
           <div style={{
             height: "100%",
-            width: `${progress}%`,
             background: "linear-gradient(to right, var(--gold), var(--gold-light))",
-            transition: `width ${DURATION}ms linear`,
+            transformOrigin: "left",
+            animation: "drawLine 1.3s cubic-bezier(0.22,1,0.36,1) 0.1s both",
           }} />
-        </div>
-
-        {/* Counter */}
-        <div style={{
-          position: "absolute",
-          bottom: 24,
-          right: 28,
-          fontFamily: "var(--font-bebas)",
-          fontSize: 13,
-          letterSpacing: "0.2em",
-          color: "rgba(255,255,255,0.18)",
-        }}>
-          {String(idx + 1).padStart(2, "0")} / {greetings.length}
         </div>
       </div>
     </>

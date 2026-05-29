@@ -3,6 +3,43 @@
 import { useState } from "react";
 import GitHubGraph from "./GitHubGraph";
 
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    await navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1800);
+  };
+  return (
+    <button
+      onClick={copy}
+      title="Copy email"
+      style={{
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        padding: "2px 4px",
+        color: copied ? "var(--gold)" : "rgba(var(--tx),0.22)",
+        transition: "color 0.2s",
+        lineHeight: 1,
+      }}
+      onMouseEnter={e => { if (!copied) (e.currentTarget as HTMLElement).style.color = "rgba(var(--tx),0.6)"; }}
+      onMouseLeave={e => { if (!copied) (e.currentTarget as HTMLElement).style.color = "rgba(var(--tx),0.22)"; }}
+    >
+      {copied ? (
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      ) : (
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+        </svg>
+      )}
+    </button>
+  );
+}
+
 export default function Contact() {
   const [form, setForm]     = useState({ name: "", email: "", message: "" });
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -82,20 +119,20 @@ export default function Contact() {
 
             <div className="reveal space-y-6" style={{ transitionDelay: "0.3s" }}>
               {socials.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-start gap-6 group"
-                >
-                  <span className="text-[10px] tracking-[0.2em] uppercase text-white/20 w-16 pt-0.5 shrink-0 group-hover:text-[#c9a84c] transition-colors duration-300">
+                <div key={item.label} className="flex items-center gap-6 group">
+                  <span className="text-[10px] tracking-[0.2em] uppercase text-white/20 w-16 shrink-0 group-hover:text-[#c9a84c] transition-colors duration-300">
                     {item.label}
                   </span>
-                  <span className="text-sm text-white/50 group-hover:text-white transition-colors duration-300 border-b border-transparent group-hover:border-white/15 pb-0.5">
+                  <a
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm text-white/50 group-hover:text-white transition-colors duration-300 border-b border-transparent group-hover:border-white/15 pb-0.5"
+                  >
                     {item.value}
-                  </span>
-                </a>
+                  </a>
+                  {item.label === "Email" && <CopyButton text={item.value} />}
+                </div>
               ))}
             </div>
 
