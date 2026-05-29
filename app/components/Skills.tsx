@@ -81,19 +81,19 @@ export default function Skills() {
           {categories.map((cat, i) => (
             <div
               key={cat.title}
-              className="reveal card p-8"
+              className="reveal skill-card p-8"
               style={{ transitionDelay: `${0.07 * i}s` }}
             >
               <h3
-                className="text-2xl mb-6 tracking-wider"
-                style={{ fontFamily: "var(--font-bebas)", color: "var(--gold)" }}
+                className="skill-card-title text-2xl mb-6 tracking-wider"
+                style={{ fontFamily: "var(--font-bebas)" }}
               >
                 {cat.title}
               </h3>
               <ul className="space-y-3">
                 {cat.items.map((item) => (
-                  <li key={item} className="flex items-center gap-3 text-sm text-white/55">
-                    <span className="w-1 h-1 rounded-full shrink-0" style={{ background: "var(--gold)" }} />
+                  <li key={item} className="skill-item flex items-center gap-3 text-sm text-white/55">
+                    <span className="skill-bullet" />
                     {item}
                   </li>
                 ))}
@@ -102,12 +102,12 @@ export default function Skills() {
           ))}
 
           <div
-            className="reveal card p-8 sm:col-span-2 md:col-span-1"
+            className="reveal skill-card p-8 sm:col-span-2 md:col-span-1"
             style={{ transitionDelay: "0.35s" }}
           >
             <h3
-              className="text-2xl mb-6 tracking-wider"
-              style={{ fontFamily: "var(--font-bebas)", color: "var(--gold)" }}
+              className="skill-card-title text-2xl mb-6 tracking-wider"
+              style={{ fontFamily: "var(--font-bebas)" }}
             >
               Competitive
             </h3>
@@ -119,8 +119,8 @@ export default function Skills() {
                 "JEE Main — 99 percentile",
                 "JEE Advanced — AIR 11,994",
               ].map((item) => (
-                <li key={item} className="flex items-center gap-3 text-sm text-white/55">
-                  <span className="w-1 h-1 rounded-full shrink-0" style={{ background: "var(--gold)" }} />
+                <li key={item} className="skill-item flex items-center gap-3 text-sm text-white/55">
+                  <span className="skill-bullet" />
                   {item}
                 </li>
               ))}
