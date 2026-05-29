@@ -3,10 +3,26 @@ import { useEffect, useRef } from "react";
 
 const items = [
   {
+    id: "platinux",
+    type: "work",
+    period: "May 2026",
+    periodEnd: "Present",
+    title: "Software Engineer Intern",
+    org: "Platinux Labs",
+    location: "Remote · Internship",
+    tags: ["Next.js", "Supabase", "PostgreSQL", "Streamlit", "AWS Lambda", "RSS Feed"],
+    bullets: [
+      "Building B2B SaaS products for agencies using Next.js and Supabase, integrating RSS feed pipelines and AWS Lambda serverless functions to automate content ingestion and processing workflows at scale.",
+      "Developing full-stack features backed by PostgreSQL with Streamlit-powered internal dashboards, enabling agencies to monitor product analytics and client data in real time.",
+    ],
+    current: true,
+    icon: "🚀",
+  },
+  {
     id: "swe",
     type: "work",
     period: "Feb 2026",
-    periodEnd: "Present",
+    periodEnd: "May 2026",
     title: "Software Engineer",
     org: "Stealth Startup",
     location: "Remote · Full-time",
@@ -16,7 +32,7 @@ const items = [
       "Spearheaded feature planning, translating product requirements into developer-ready technical roadmaps.",
       "Authored comprehensive API contracts and system guidelines to streamline team workflows.",
     ],
-    current: true,
+    current: false,
     icon: "💼",
   },
   {

@@ -1,8 +1,20 @@
 const experiences = [
   {
+    role: "Software Engineer Intern",
+    company: "Platinux Labs",
+    period: "May 2026 — Present",
+    type: "Internship · Remote",
+    stack: ["Next.js", "Supabase", "PostgreSQL", "Streamlit", "AWS Lambda", "RSS Feed"],
+    bullets: [
+      "Building B2B SaaS products for agencies using Next.js and Supabase, integrating RSS feed pipelines and AWS Lambda serverless functions to automate content ingestion and processing workflows at scale.",
+      "Developing full-stack features backed by PostgreSQL with Streamlit-powered internal dashboards, enabling agencies to monitor product analytics and client data in real time.",
+    ],
+    current: true,
+  },
+  {
     role: "Software Engineer",
     company: "Stealth Startup",
-    period: "Feb 2026 — Present",
+    period: "Feb 2026 — May 2026",
     type: "Full-time · Remote",
     stack: ["Node.js", "Supabase", "PostgreSQL", "Redis", "CI/CD"],
     bullets: [
@@ -10,7 +22,7 @@ const experiences = [
       "Spearheaded feature planning and execution, translating complex product requirements into precise, developer-ready technical roadmaps.",
       "Authored comprehensive API documentation and system guidelines to streamline developer workflows across the team.",
     ],
-    current: true,
+    current: false,
   },
   {
     role: "Web Development Intern",
