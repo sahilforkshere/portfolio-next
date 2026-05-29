@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Black background -->
+  <rect width="32" height="32" fill="#000000"/>
+  <!-- Gold corner accents -->
+  <line x1="0" y1="0" x2="8" y2="0" stroke="#c9a84c" stroke-width="1.5"/>
+  <line x1="0" y1="0" x2="0" y2="8" stroke="#c9a84c" stroke-width="1.5"/>
+  <line x1="32" y1="32" x2="24" y2="32" stroke="#c9a84c" stroke-width="1.5"/>
+  <line x1="32" y1="32" x2="32" y2="24" stroke="#c9a84c" stroke-width="1.5"/>
+  <!-- SP text -->
+  <text x="4" y="23" font-family="Georgia, serif" font-weight="700" font-size="18" fill="#c9a84c" letter-spacing="-1">SP</text>
+</svg>

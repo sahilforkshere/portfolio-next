@@ -10,6 +10,10 @@ const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: "400", variable: "--f
 export const metadata: Metadata = {
   title: "Sahil Pal • Software Engineer & Full Stack Developer",
   description: "Software Engineer. Full Stack Web Developer — building fast, scalable, and beautiful web experiences.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+  },
   openGraph: {
     title: "Sahil Pal • Software Engineer & Full Stack Developer",
     description: "Building fast, scalable B2B products and full-stack web experiences.",
