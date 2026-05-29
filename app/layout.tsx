@@ -10,6 +10,18 @@ const bebasNeue = Bebas_Neue({ subsets: ["latin"], weight: "400", variable: "--f
 export const metadata: Metadata = {
   title: "Sahil Pal • Software Engineer & Full Stack Developer",
   description: "Software Engineer. Full Stack Web Developer — building fast, scalable, and beautiful web experiences.",
+  openGraph: {
+    title: "Sahil Pal • Software Engineer & Full Stack Developer",
+    description: "Building fast, scalable B2B products and full-stack web experiences.",
+    url: "https://sahilpal.dev",
+    siteName: "Sahil Pal",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sahil Pal • Software Engineer & Full Stack Developer",
+    description: "Building fast, scalable B2B products and full-stack web experiences.",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
