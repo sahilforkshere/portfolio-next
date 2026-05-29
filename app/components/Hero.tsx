@@ -92,6 +92,45 @@ export default function Hero() {
         <p className="subtitle-gold mt-6 md:mt-8">
           Software Engineer
         </p>
+
+        {/* ── Open to Work badge ── */}
+        <div className="mt-7 flex items-center justify-center">
+          <a
+            href="#contact"
+            className="inline-flex items-center gap-2.5 px-4 py-2 border transition-all duration-300 group"
+            style={{
+              borderColor: "rgba(201,168,76,0.28)",
+              background: "rgba(201,168,76,0.05)",
+              borderRadius: 2,
+            }}
+            onMouseEnter={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,168,76,0.55)";
+              (e.currentTarget as HTMLElement).style.background  = "rgba(201,168,76,0.1)";
+            }}
+            onMouseLeave={e => {
+              (e.currentTarget as HTMLElement).style.borderColor = "rgba(201,168,76,0.28)";
+              (e.currentTarget as HTMLElement).style.background  = "rgba(201,168,76,0.05)";
+            }}
+          >
+            {/* Pulsing dot */}
+            <span className="relative flex h-2 w-2">
+              <span
+                className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                style={{ background: "var(--gold)" }}
+              />
+              <span
+                className="relative inline-flex rounded-full h-2 w-2"
+                style={{ background: "var(--gold-light)" }}
+              />
+            </span>
+            <span
+              className="text-[10px] tracking-[0.22em] uppercase"
+              style={{ color: "rgba(201,168,76,0.85)" }}
+            >
+              Available for freelance &amp; full-time
+            </span>
+          </a>
+        </div>
       </div>
 
       {/* Scroll cue */}
