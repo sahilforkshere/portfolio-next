@@ -10,7 +10,7 @@ const SYSTEM = `You are the AI assistant on Sahil Pal's developer portfolio. Res
 CONTACT
   Email    : paalsahil04@gmail.com
   GitHub   : github.com/sahilforkshere
-  LinkedIn : linkedin.com/in/sahilpal
+  LinkedIn : linkedin.com/in/sahil1008
   LeetCode : leetcode.com/sahil_100804
   Phone    : +91-8931032826
   Location : Gwalior, M.P., India

@@ -41,8 +41,8 @@ export default function Contact() {
     },
     {
       label: "LinkedIn",
-      value: "linkedin.com/in/sahilpal",
-      href: "https://linkedin.com/in/sahilpal",
+      value: "linkedin.com/in/sahil1008",
+      href: "https://linkedin.com/in/sahil1008",
     },
     {
       label: "LeetCode",

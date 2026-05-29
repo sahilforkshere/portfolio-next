@@ -55,7 +55,7 @@ const FILES: Record<string, string> = {
   "contact.txt": [
     "  Email    │ paalsahil04@gmail.com",
     "  GitHub   │ github.com/sahilforkshere",
-    "  LinkedIn │ linkedin.com/in/sahilpal",
+    "  LinkedIn │ linkedin.com/in/sahil1008",
     "  LeetCode │ leetcode.com/sahil_100804",
   ].join("\n"),
 
@@ -129,7 +129,7 @@ const HELP_LINES = [
 
 const OPEN_URLS: Record<string, string> = {
   github:   "https://github.com/sahilforkshere",
-  linkedin: "https://linkedin.com/in/sahilpal",
+  linkedin: "https://linkedin.com/in/sahil1008",
   leetcode: "https://leetcode.com/sahil_100804",
 };
 

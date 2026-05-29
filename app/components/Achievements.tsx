@@ -1,44 +1,29 @@
-const academic = [
-  {
-    title: "JEE Main 2023",
-    value: "99 Percentile",
-    detail: "Top 1% among 1.4 million candidates nationwide",
-    icon: "🏆",
-  },
-  {
-    title: "JEE Advanced 2023",
-    value: "AIR 11,994",
-    detail: "Among 200,000+ aspirants — qualified for central institute counselling",
-    icon: "🎯",
-  },
-  {
-    title: "DSA & Competitive Programming",
-    value: "300+ Problems",
-    detail: "Solved across LeetCode, Codeforces, and GeeksForGeeks",
-    icon: "⚡",
-  },
-];
+"use client";
 
 const leadership = [
   {
     role: "Core Team Member — Design",
     org: "Aurora Fest, IIITM Gwalior",
     detail: "Designed visual branding and ensured consistent design language across all fest events.",
+    index: "01",
   },
   {
     role: "Core Team Member",
     org: "Urja Sports Fest, IIITM Gwalior",
     detail: "Managed logistics and team coordination for the institute's annual sports events.",
+    index: "02",
   },
   {
     role: "Founder",
     org: "It's Not Too Late — Climate Org",
     detail: "Led a student climate organization with workshops, campaigns, and local tree-planting drives.",
+    index: "03",
   },
   {
     role: "Member",
     org: "Rotaract Club",
     detail: "Mentored underprivileged children via weekend literacy sessions and community initiatives.",
+    index: "04",
   },
 ];
 
@@ -49,11 +34,11 @@ export default function Achievements() {
 
         <div className="reveal flex items-center gap-4 mb-16">
           <span className="line-gold" />
-          <span className="subtitle-gold">Recognition & Leadership</span>
+          <span className="subtitle-gold">Leadership</span>
         </div>
 
         <h2
-          className="reveal text-5xl md:text-7xl font-light tracking-tight mb-16"
+          className="reveal text-5xl md:text-7xl font-light tracking-tight mb-20"
           style={{ transitionDelay: "0.1s" }}
         >
           Beyond
@@ -61,59 +46,62 @@ export default function Achievements() {
           <span style={{ color: "var(--gold)" }}>the code.</span>
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-16">
-          {/* Academic achievements */}
-          <div>
-            <p className="reveal text-xs tracking-[0.2em] uppercase text-white/30 mb-8" style={{ transitionDelay: "0.1s" }}>
-              Academic & Competitive
-            </p>
-            <div className="space-y-px bg-white/[0.06]">
-              {academic.map((a, i) => (
-                <div
-                  key={a.title}
-                  className="reveal card p-6 group"
-                  style={{ transitionDelay: `${0.1 * i}s` }}
+        <div className="grid sm:grid-cols-2 gap-px bg-white/[0.06]">
+          {leadership.map((l, i) => (
+            <div
+              key={l.role}
+              className="reveal skill-card p-8 group"
+              style={{ transitionDelay: `${0.08 * i}s` }}
+            >
+              {/* index + org row */}
+              <div className="flex items-center justify-between mb-5">
+                <span
+                  className="text-[10px] tracking-[0.25em] uppercase"
+                  style={{ color: "rgba(var(--tx), 0.2)" }}
                 >
-                  <div className="flex items-start gap-4">
-                    <span className="text-2xl mt-0.5">{a.icon}</span>
-                    <div>
-                      <p className="text-[10px] tracking-[0.2em] uppercase text-white/25 mb-1">{a.title}</p>
-                      <p
-                        className="text-2xl mb-1 group-hover:text-[#c9a84c] transition-colors duration-300"
-                        style={{ fontFamily: "var(--font-bebas)", color: "var(--gold-light)" }}
-                      >
-                        {a.value}
-                      </p>
-                      <p className="text-xs text-white/35 leading-relaxed">{a.detail}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+                  {l.org}
+                </span>
+                <span
+                  className="text-xs tabular-nums"
+                  style={{
+                    fontFamily: "var(--font-bebas)",
+                    color: "rgba(201,168,76,0.25)",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  {l.index}
+                </span>
+              </div>
 
-          {/* Leadership */}
-          <div>
-            <p className="reveal text-xs tracking-[0.2em] uppercase text-white/30 mb-8" style={{ transitionDelay: "0.1s" }}>
-              Positions of Responsibility
-            </p>
-            <div className="space-y-px bg-white/[0.06]">
-              {leadership.map((l, i) => (
-                <div
-                  key={l.role}
-                  className="reveal card p-6 group"
-                  style={{ transitionDelay: `${0.1 * i}s` }}
-                >
-                  <p className="text-sm font-medium text-white group-hover:text-[#c9a84c] transition-colors duration-300 mb-0.5">
-                    {l.role}
-                  </p>
-                  <p className="text-xs text-white/40 mb-2">{l.org}</p>
-                  <p className="text-xs text-white/30 leading-relaxed">{l.detail}</p>
-                </div>
-              ))}
+              {/* role — large title */}
+              <p
+                className="text-xl md:text-2xl mb-4 leading-tight skill-card-title"
+                style={{ fontFamily: "var(--font-bebas)", letterSpacing: "0.05em" }}
+              >
+                {l.role}
+              </p>
+
+              {/* divider */}
+              <div
+                className="mb-4"
+                style={{
+                  height: 1,
+                  background: "linear-gradient(90deg, rgba(201,168,76,0.25), transparent)",
+                  transition: "opacity 0.3s",
+                }}
+              />
+
+              {/* detail */}
+              <p
+                className="text-sm leading-relaxed"
+                style={{ color: "rgba(var(--tx), 0.38)" }}
+              >
+                {l.detail}
+              </p>
             </div>
-          </div>
+          ))}
         </div>
+
       </div>
     </section>
   );

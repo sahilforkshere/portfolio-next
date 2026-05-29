@@ -14,7 +14,7 @@ export default function Footer() {
         <div className="flex gap-6">
           {[
             { l: "GitHub", h: "https://github.com/sahilforkshere" },
-            { l: "LinkedIn", h: "https://linkedin.com/in/sahilpal" },
+            { l: "LinkedIn", h: "https://linkedin.com/in/sahil1008" },
             { l: "LeetCode", h: "https://leetcode.com/sahil_100804" },
             { l: "Codeforces", h: "https://codeforces.com/profile/codesahil.c" },
           ].map((x) => (
